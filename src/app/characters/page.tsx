@@ -12,7 +12,7 @@ export default async function CharactersPage({
   const characters = await getCharacters(search ?? "");
 
   return (
-    <div>
+    <div className="pb-16">
       <CharactersSearch />
       {characters.map((character) => (
         <Link key={character._id} href={`/characters/${character._id}`}>

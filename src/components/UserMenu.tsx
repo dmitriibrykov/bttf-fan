@@ -2,54 +2,58 @@
 
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+
+const avatarClass = "h-[50px] w-[50px] rounded-[50%] cursor-pointer";
 
 export default function UserMenu() {
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const router = useRouter();
   const { data: session, status } = useSession();
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsModalOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleModalOpen = () => setIsModalOpen((prev) => !prev);
 
   return (
     <>
-      <div className="relative" ref={menuRef}>
-        {session?.user?.image ? (
-          <img
-            src={session.user.image}
-            alt="avatar"
-            className="h-[50px] w-[50px] rounded-[50%]"
-            onClick={handleModalOpen}
-          />
-        ) : (
-          <div
-            className="w-[50px] h-[50px] rounded-[50%]"
-            onClick={handleModalOpen}
-          />
-        )}
-        {isModalOpen && (
-          <div className="absolute right-0 top-full mt-2 bg-[#eb7010] rounded-md p-2">
-            {status === "authenticated" ? (
-              <>
-                <button onClick={() => signOut()}>Sign out</button>
-              </>
-            ) : (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          {session?.user?.image ? (
+            <img
+              src={session.user.image}
+              alt="avatar"
+              className={avatarClass}
+            />
+          ) : (
+            <div className={avatarClass} />
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="mt-2 rounded-md p-2">
+          {status === "authenticated" ? (
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onSelect={() => router.push("/profile")}
+                className="cursor-pointer"
+              >
+                Profile Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => signOut()}
+                className="text-red-500 cursor-pointer"
+              >
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          ) : (
+            <DropdownMenuItem>
               <Link href="/api/auth/signin">Sign in / Sign up</Link>
-            )}
-          </div>
-        )}
-      </div>
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 }
