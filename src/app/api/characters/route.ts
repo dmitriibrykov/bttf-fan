@@ -7,8 +7,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const search = searchParams.get("search");
 
-  console.log(search, "api");
-
   const characters = await CharacterModel.find(
     search ? { name: { $regex: search, $options: "i" } } : {},
   ).lean();

@@ -3,34 +3,54 @@
 import { useSession } from "next-auth/react";
 import CharactersLoading from "../loading";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { UserAvatar } from "./_components";
 
 export default function Profile() {
   const { data, update, status } = useSession();
   const [name, setName] = useState<string | null>(null);
+  const [imgSrc, setImgSrc] = useState("");
 
-  console.log(data);
+  const isButtonDisabled = useMemo(
+    () => name === data?.user?.name && imgSrc.length === 0,
+    [data?.user?.name, imgSrc, name],
+  );
 
   useEffect(() => {
-    console.log(data);
     if (data?.user) {
       if (!name && data.user.name) setName(data.user.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  const handleCancel = () => {
+    setName(data?.user?.name ?? null);
+    setImgSrc("");
+  };
+
   const handleSave = async () => {
+    const formData = new FormData();
+    if (name !== data?.user?.name) formData.append("name", name ?? "");
+    if (!!imgSrc) {
+      const response = await fetch(imgSrc);
+      const blob = await response.blob();
+      formData.append("file", blob, "avatar.jpg");
+    }
+
     const res = await fetch("/api/user", {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email: data?.user?.email }),
+      body: formData,
     });
 
     const resData = await res.json();
 
     if (resData.updatedUser.modifiedCount > 0) {
-      await update({ name });
+      if (resData.imgSrc) {
+        await update({ name, image: resData.imgSrc });
+      } else {
+        await update({ name });
+      }
       toast.success("Profile updated!");
     }
   };
@@ -39,24 +59,38 @@ export default function Profile() {
 
   return (
     <div className="w-screen h-auto grid justify-center">
-      <h1 className="mb-8">Profile Settings</h1>
-      <div>
-        <p>Name</p>
-        <input
-          type="text"
-          value={name ?? ""}
-          onChange={(e) => setName(e.target.value)}
-          className="border-1 border-[#eb7010] rounded-sm p-2"
-        />
+      <h1 className="mb-16 text-center">Profile Settings</h1>
+      <div className="grid gap-32 grid-cols-2">
+        <div className="flex flex-col justify-end gap-2">
+          <p>Name</p>
+          <input
+            id="name"
+            type="text"
+            value={name ?? ""}
+            onChange={(e) => setName(e.target.value)}
+            className="border-1 border-[#eb7010] rounded-sm p-2"
+          />
+        </div>
+        <UserAvatar imgSrc={imgSrc} setImgSrc={setImgSrc} />
       </div>
-      <Button
-        onClick={handleSave}
-        className="mt-8"
-        variant="secondary"
-        disabled={name === data?.user?.name}
-      >
-        Save
-      </Button>
+      <div className="mt-8 flex gap-16 w-full justify-center">
+        <Button
+          onClick={handleSave}
+          className="w-[200px] h-[50px]"
+          variant="secondary"
+          disabled={isButtonDisabled}
+        >
+          Save
+        </Button>
+        <Button
+          onClick={handleCancel}
+          className="w-[200px] h-[50px]"
+          variant="destructive"
+          disabled={isButtonDisabled}
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   );
 }
