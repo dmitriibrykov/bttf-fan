@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          <main className="p-6 flex-1 flex">{children}</main>
+          <main className="p-2 md:p-6 flex-1 flex">{children}</main>
           <Toaster />
         </Providers>
       </body>

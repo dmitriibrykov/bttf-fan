@@ -71,7 +71,7 @@ export default function Profile() {
           className="border-1 border-[#eb7010] rounded-sm p-2"
         />
       </div>
-      <div className="flex gap-4 mt-16">
+      <div className="flex-col md:flex-row flex gap-4 mt-4 md:mt-16">
         <Button
           onClick={handleSave}
           className="w-[200px] h-[50px]"

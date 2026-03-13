@@ -22,7 +22,7 @@ import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 
 const avatarClass =
-  "h-[50px] w-[50px] min-w-[50px] rounded-full! cursor-pointer";
+  "h-[50px] w-[50px] min-w-[50px] min-h-[50px] rounded-full! cursor-pointer";
 
 export default function UserMenu() {
   const isTablet = useMediaQuery("(min-width: 768px)");
