@@ -115,4 +115,7 @@ h4 {
   button {
     @apply cursor-pointer;
   }
+  a {
+    @apply font-bold;
+  }
 }

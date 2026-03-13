@@ -17,18 +17,18 @@ export function Header() {
         width="0"
         height="0"
         sizes="100vw"
-        className="h-[80px] w-fit"
+        className="h-[40px] w-fit md:h-[40px]"
         loading="eager"
       />
       <Link
         href="/"
-        className="text-4xl font-bold border-b-4 text-foreground border-foreground transition-colors hover:text-primary hover:border-primary"
+        className="hidden md:inline text-2xl border-b-4 text-foreground border-foreground transition-colors hover:text-primary hover:border-primary"
       >
         Main
       </Link>
       <Link
         href="/characters"
-        className="text-4xl font-bold border-b-4 border-foreground transition-colors hover:text-primary hover:border-primary"
+        className="hidden md:inline text-2xl font-bold border-b-4 border-foreground transition-colors hover:text-primary hover:border-primary"
       >
         Characters
       </Link>
