@@ -58,26 +58,24 @@ export default function Profile() {
   if (status === "loading" && !data) return <CharactersLoading />;
 
   return (
-    <div className="w-screen h-auto grid justify-center">
-      <h1 className="mb-16 text-center">Profile Settings</h1>
-      <div className="grid gap-32 grid-cols-2">
-        <div className="flex flex-col justify-end gap-2">
-          <p>Name</p>
-          <input
-            id="name"
-            type="text"
-            value={name ?? ""}
-            onChange={(e) => setName(e.target.value)}
-            className="border-1 border-[#eb7010] rounded-sm p-2"
-          />
-        </div>
-        <UserAvatar imgSrc={imgSrc} setImgSrc={setImgSrc} />
+    <div className="w-screen h-auto flex flex-col items-center gap-4">
+      <h1 className="text-center">Profile Settings</h1>
+      <UserAvatar imgSrc={imgSrc} setImgSrc={setImgSrc} />
+      <div className="flex flex-col justify-end gap-2">
+        <p className="font-bold">Name</p>
+        <input
+          id="name"
+          type="text"
+          value={name ?? ""}
+          onChange={(e) => setName(e.target.value)}
+          className="border-1 border-[#eb7010] rounded-sm p-2"
+        />
       </div>
-      <div className="mt-8 flex gap-16 w-full justify-center">
+      <div className="flex gap-4 mt-16">
         <Button
           onClick={handleSave}
           className="w-[200px] h-[50px]"
-          variant="secondary"
+          variant="default"
           disabled={isButtonDisabled}
         >
           Save
@@ -85,7 +83,7 @@ export default function Profile() {
         <Button
           onClick={handleCancel}
           className="w-[200px] h-[50px]"
-          variant="destructive"
+          variant="outline"
           disabled={isButtonDisabled}
         >
           Cancel
