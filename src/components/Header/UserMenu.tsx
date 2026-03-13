@@ -8,7 +8,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 
 const avatarClass = "h-[50px] w-[50px] rounded-[50%] cursor-pointer";

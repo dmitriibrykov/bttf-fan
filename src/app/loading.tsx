@@ -1,20 +1,9 @@
-import { Oval } from "react-loader-spinner";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function CharactersLoading() {
   return (
     <div className="min-h-screen w-full flex justify-center items-center">
-      <Oval
-        height={80}
-        width={80}
-        color="#eb7010"
-        wrapperStyle={{}}
-        wrapperClass=""
-        visible={true}
-        ariaLabel="oval-loading"
-        secondaryColor="#eb7010"
-        strokeWidth={2}
-        strokeWidthSecondary={2}
-      />
+      <Spinner className="size-24 text-primary!" />
     </div>
   );
 }
