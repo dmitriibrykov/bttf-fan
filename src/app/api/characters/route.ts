@@ -9,7 +9,9 @@ export async function GET(request: Request) {
 
   const characters = await CharacterModel.find(
     search ? { name: { $regex: search, $options: "i" } } : {},
-  ).lean();
+  )
+    .sort({ name: 1 })
+    .lean();
 
   return Response.json({ characters });
 }

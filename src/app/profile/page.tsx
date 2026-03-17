@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { UserAvatar } from "./_components";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Profile() {
   const { data, update, status } = useSession();
   const [name, setName] = useState<string | null>(null);
   const [imgSrc, setImgSrc] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const isButtonDisabled = useMemo(
     () => name === data?.user?.name && imgSrc.length === 0,
@@ -30,6 +32,8 @@ export default function Profile() {
   };
 
   const handleSave = async () => {
+    setIsSaving(true);
+
     const formData = new FormData();
     if (name !== data?.user?.name) formData.append("name", name ?? "");
     if (!!imgSrc) {
@@ -53,6 +57,8 @@ export default function Profile() {
       }
       toast.success("Profile updated!");
     }
+
+    setIsSaving(false);
   };
 
   if (status === "loading" && !data) return <CharactersLoading />;
@@ -78,7 +84,13 @@ export default function Profile() {
           variant="default"
           disabled={isButtonDisabled}
         >
-          Save
+          {isSaving && (
+            <>
+              <Spinner />
+              <span>Saving...</span>
+            </>
+          )}
+          {!isSaving && <span>Save</span>}
         </Button>
         <Button
           onClick={handleCancel}
