@@ -4,7 +4,7 @@ import { ChangeEvent, useCallback } from "react";
 import { debounce } from "lodash-es";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function CharactersSearch() {
+export function CharactersSearch() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -25,9 +25,11 @@ export default function CharactersSearch() {
   );
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex items-center justify-center">
       <input
         type="text"
+        placeholder="Enter character's name"
+        className="px-4 py-2 min-w-[400px] h-[50px] border-1 border-ring rounded-md"
         defaultValue={searchParams.get("search") ?? ""}
         onChange={onSearchChange}
       />

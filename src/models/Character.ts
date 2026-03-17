@@ -5,12 +5,14 @@ export type Character = {
   _id: string;
   name: string;
   imgSrc: string;
+  actor: string;
   appearance: Appearance[];
 };
 
 const characterSchema = new mongoose.Schema<Character>({
   name: String,
   imgSrc: String,
+  actor: String,
   appearance: [{ type: String, enum: Appearance }],
 });
 

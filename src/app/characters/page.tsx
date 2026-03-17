@@ -1,7 +1,5 @@
-import Image from "next/image";
 import { getCharacters } from "@/lib/api";
-import CharactersSearch from "./_components/CharactersSearch";
-import Link from "next/link";
+import { CharacterCard, CharactersSearch } from "./_components";
 
 export default async function CharactersPage({
   searchParams,
@@ -12,22 +10,18 @@ export default async function CharactersPage({
   const characters = await getCharacters(search ?? "");
 
   return (
-    <div className="pb-16">
+    <div className="pb-16 w-full flex flex-col gap-8">
       <CharactersSearch />
-      {characters.map((character) => (
-        <Link key={character._id} href={`/characters/${character._id}`}>
-          <h2>{character.name}</h2>
-          <Image
-            src={character.imgSrc}
-            alt={character.name}
-            width="0"
-            height="0"
-            className="h-auto w-[300px]"
-            sizes="100vw"
-            loading="eager"
-          />
-        </Link>
-      ))}
+      {characters.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {characters.map((character) => (
+            <CharacterCard key={character._id} character={character} />
+          ))}
+        </div>
+      )}
+      {characters.length === 0 && (
+        <h2 className="text-center">No characters found!</h2>
+      )}
     </div>
   );
 }

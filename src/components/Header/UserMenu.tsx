@@ -20,30 +20,27 @@ import {
 } from "../ui/sheet";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
+import UserAvatar from "../UserAvatar";
 
 const avatarClass =
-  "h-[50px] w-[50px] min-w-[50px] min-h-[50px] rounded-full! cursor-pointer";
+  "h-[50px] w-[50px] min-w-[50px] min-h-[50px] cursor-pointer";
 
 export default function UserMenu() {
   const isTablet = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  const avatar = session?.user?.image ? (
-    <img src={session.user.image} alt="avatar" className={avatarClass} />
-  ) : (
-    <Button
-      className={`${avatarClass} bg-muted flex items-center justify-center text-xl font-bold`}
-    >
-      {session?.user?.name?.[0]?.toUpperCase() ?? "?"}
-    </Button>
-  );
-
   return (
     <>
       {!isTablet && (
         <Sheet>
-          <SheetTrigger asChild>{avatar}</SheetTrigger>
+          <SheetTrigger asChild>
+            <UserAvatar
+              classes={avatarClass}
+              imgSrc={session?.user?.image}
+              name={session?.user?.name}
+            />
+          </SheetTrigger>
           <SheetContent className="flex flex-col items-center py-16">
             <SheetTitle></SheetTitle>
             <SheetDescription></SheetDescription>
@@ -64,7 +61,13 @@ export default function UserMenu() {
       )}
       {isTablet && (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>{avatar}</DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
+            <UserAvatar
+              classes={avatarClass}
+              imgSrc={session?.user?.image}
+              name={session?.user?.name}
+            />
+          </DropdownMenuTrigger>
           <DropdownMenuContent className="mt-2 rounded-md p-2">
             {status === "authenticated" ? (
               <DropdownMenuGroup>
