@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { type Character } from "@/models/Character";
 import { getAppearancePart } from "@/utils";
+import { MessageCircle } from "lucide-react";
 
 type Props = {
   character: Character;
@@ -15,6 +16,10 @@ export function CharacterCard({ character }: Props) {
           alt={character.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
+        <div className="absolute right-0 top-0 p-4 flex items-center gap-1 text-white text-sm">
+          <MessageCircle size={16} />
+          <span>{character.commentsCount}</span>
+        </div>
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex flex-col">
           <span className="text-white font-bold text-lg">{character.name}</span>
           <div className="flex flex-col">

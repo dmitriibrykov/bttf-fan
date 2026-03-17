@@ -1,7 +1,7 @@
 import { Appearance } from "@/types/enums";
 import mongoose from "mongoose";
 
-export type Character = {
+type Base = {
   _id: string;
   name: string;
   imgSrc: string;
@@ -9,7 +9,11 @@ export type Character = {
   appearance: Appearance[];
 };
 
-const characterSchema = new mongoose.Schema<Character>({
+export type Character = Base & {
+  commentsCount: number;
+};
+
+const characterSchema = new mongoose.Schema<Base>({
   name: String,
   imgSrc: String,
   actor: String,

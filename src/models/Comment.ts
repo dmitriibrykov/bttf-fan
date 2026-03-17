@@ -18,10 +18,10 @@ export type Comment = Base & {
 
 const commentSchema = new mongoose.Schema<Base>(
   {
-    _character_id: String,
+    _character_id: mongoose.SchemaTypes.ObjectId,
     _user_email: String,
     body: String,
-    createdAt: Date,
+    createdAt: mongoose.SchemaTypes.Date,
   },
   {
     timestamps: true,

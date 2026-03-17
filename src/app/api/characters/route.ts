@@ -7,11 +7,24 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const search = searchParams.get("search");
 
-  const characters = await CharacterModel.find(
-    search ? { name: { $regex: search, $options: "i" } } : {},
-  )
+  const characters = await CharacterModel.aggregate()
+    .match(search ? { name: { $regex: search, $options: "i" } } : {})
+    .lookup({
+      from: "comments",
+      localField: "_id",
+      foreignField: "_character_id",
+      as: "comments",
+    })
+    .addFields({
+      commentsCount: {
+        $size: "$comments",
+      },
+    })
+    .project({
+      comments: 0,
+    })
     .sort({ name: 1 })
-    .lean();
+    .exec();
 
   return Response.json({ characters });
 }

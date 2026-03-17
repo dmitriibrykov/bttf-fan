@@ -23,33 +23,3 @@ export const getCharacter = async (id: string): Promise<Character | null> => {
     return null;
   }
 };
-
-export const getComments = async (characterId: string) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/comments?characterId=${characterId}`,
-  );
-
-  const { comments } = await res.json();
-
-  return comments;
-};
-
-export const sendComment = async (characterId: string, comment: string) => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
-      method: "PUT",
-      body: JSON.stringify({
-        characterId,
-        body: comment,
-      }),
-    });
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-
-    return data;
-  } catch {
-    return null;
-  }
-};

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { getUserFromServerSession } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
 import { CommentModel } from "@/models/Comment";
@@ -10,7 +11,7 @@ export async function GET(req: Request) {
     const characterId = searchParams.get("characterId");
 
     const comments = await CommentModel.aggregate()
-      .match({ _character_id: characterId })
+      .match({ _character_id: new mongoose.Types.ObjectId(characterId ?? "") })
       .lookup({
         from: "users",
         localField: "_user_email",
@@ -35,7 +36,7 @@ export async function GET(req: Request) {
   }
 }
 
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   await dbConnect();
   const user = await getUserFromServerSession();
 
@@ -46,7 +47,7 @@ export async function PUT(req: Request) {
   const { characterId, body } = await req.json();
 
   const res = await CommentModel.create({
-    _character_id: characterId,
+    _character_id: new mongoose.Types.ObjectId(characterId),
     body,
     _user_email: user.email,
     createdAt: new Date().toISOString(),
