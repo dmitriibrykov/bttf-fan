@@ -1,3 +1,5 @@
+"use client";
+
 type Props = {
   classes?: string;
   imgSrc?: string | null;

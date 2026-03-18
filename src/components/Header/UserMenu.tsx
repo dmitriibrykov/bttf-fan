@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMediaQuery } from "@/hooks";
 import {
   Sheet,
@@ -21,6 +21,8 @@ import {
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import UserAvatar from "../UserAvatar";
+import React, { useState } from "react";
+import { mobileDialogLinks } from "@/constants";
 
 const avatarClass =
   "h-[50px] w-[50px] min-w-[50px] min-h-[50px] cursor-pointer";
@@ -28,13 +30,19 @@ const avatarClass =
 export default function UserMenu() {
   const isTablet = useMediaQuery("(min-width: 768px)");
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session, status } = useSession();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleToggleSheet = () => {
+    setIsSheetOpen((val) => !val);
+  };
 
   return (
     <>
       {!isTablet && (
-        <Sheet>
-          <SheetTrigger asChild>
+        <Sheet open={isSheetOpen} onOpenChange={handleToggleSheet}>
+          <SheetTrigger>
             <UserAvatar
               classes={avatarClass}
               imgSrc={session?.user?.image}
@@ -44,11 +52,24 @@ export default function UserMenu() {
           <SheetContent className="flex flex-col items-center py-16">
             <SheetTitle></SheetTitle>
             <SheetDescription></SheetDescription>
-            <Link href="/profile">Profile Settings</Link>
-            <Separator />
-            <Link href="/">Main</Link>
-            <Link href="/characters">Characters</Link>
-            <Separator />
+            {mobileDialogLinks.map(({ href, label, separator }) => {
+              const isActive = pathname === href;
+
+              return (
+                <React.Fragment key={href}>
+                  {isActive ? (
+                    <span className="text-primary border-b-1 border-primary">
+                      {label}
+                    </span>
+                  ) : (
+                    <Link href={href} onClick={handleToggleSheet}>
+                      {label}
+                    </Link>
+                  )}
+                  {separator && <Separator />}
+                </React.Fragment>
+              );
+            })}
             <Button
               onClick={() => signOut()}
               variant="destructive"
