@@ -1,4 +1,4 @@
-import { Appearance } from "@/types/enums";
+import { Appearance } from "@/types";
 
 export function getAppearancePart(appearance: Appearance) {
   switch (appearance) {

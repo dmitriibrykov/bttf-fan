@@ -1,4 +1,4 @@
-import { Appearance } from "@/types/enums";
+import { Appearance } from "@/types";
 import mongoose from "mongoose";
 
 type Base = {

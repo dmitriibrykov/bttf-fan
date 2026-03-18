@@ -16,14 +16,12 @@ type Props = {
 
 export function Comments({ characterId }: Props) {
   const [comments, setComments] = useState<Comment[] | null>(null);
-  const [comment, setComment] = useState("");
+  const [newComment, setNewComment] = useState("");
   const [isSending, setIsSending] = useState<boolean>(false);
 
   const fetchComments = useCallback(async () => {
     await getComments(characterId).then(setComments);
   }, [characterId]);
-
-  console.log(comments);
 
   useEffect(() => {
     fetchComments();
@@ -31,8 +29,8 @@ export function Comments({ characterId }: Props) {
 
   const send = async () => {
     setIsSending(true);
-    const res = await sendComment(characterId, comment);
-    if (!res !== null) {
+    const res = await sendComment(characterId, newComment);
+    if (res !== null) {
       await fetchComments();
     } else {
       toast.error(
@@ -40,7 +38,7 @@ export function Comments({ characterId }: Props) {
       );
     }
 
-    setComment("");
+    setNewComment("");
     setIsSending(false);
   };
 
@@ -76,13 +74,13 @@ export function Comments({ characterId }: Props) {
       <div className="flex flex-col max-w-[500px] w-full">
         <p className="mt-4">Leave your comment:</p>
         <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
           className="border-1 border-primary rounded-md mb-4 p-2 w-full min-h-[150px]"
         />
         <Button
           onClick={send}
-          disabled={comment.length === 0}
+          disabled={newComment.length === 0}
           className="w-[300px] h-[50px] ml-auto"
         >
           {isSending && (

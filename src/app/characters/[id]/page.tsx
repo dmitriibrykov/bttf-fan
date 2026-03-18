@@ -20,7 +20,7 @@ export default async function CharacterPage({
 
   return (
     <div className="flex flex-col items-center w-full mx-auto h-auto gap-4 pb-4 px-4 md:gap-8 md:pb-8 md:px-8 pt-4">
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-16">
         <img
           src={character.imgSrc}
           alt={character.name}
