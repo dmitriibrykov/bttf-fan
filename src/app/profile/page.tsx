@@ -5,7 +5,7 @@ import CharactersLoading from "../loading";
 import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { UserAvatar } from "./_components";
+import { ProfilePicture } from "./_components";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function Profile() {
@@ -66,7 +66,7 @@ export default function Profile() {
   return (
     <div className="w-screen h-auto flex flex-col items-center gap-4">
       <h1 className="text-center">Profile Settings</h1>
-      <UserAvatar imgSrc={imgSrc} setImgSrc={setImgSrc} />
+      <ProfilePicture imgSrc={imgSrc} setImgSrc={setImgSrc} />
       <div className="flex flex-col justify-end gap-2">
         <p className="font-bold">Name</p>
         <input

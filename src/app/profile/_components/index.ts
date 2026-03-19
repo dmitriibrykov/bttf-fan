@@ -1,2 +1,2 @@
 export * from "./AvatarCropper";
-export * from "./UserAvatar";
+export * from "./ProfilePicture";

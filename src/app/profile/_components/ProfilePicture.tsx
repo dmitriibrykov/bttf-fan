@@ -15,7 +15,7 @@ type Props = {
   setImgSrc: (imgSrc: string) => void;
 };
 
-export function UserAvatar({ imgSrc, setImgSrc }: Props) {
+export function ProfilePicture({ imgSrc, setImgSrc }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [rawPhotoSrc, setRawPhotoSrc] = useState<string | undefined>();
