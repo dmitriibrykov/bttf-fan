@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getTimelineEvents } from "@/lib/api";
 import Loading from "../loading";
 import { type Timeline } from "@/models/Timeline";
+import { useTimelines } from "@/hooks";
+import { STATUS } from "@/types";
+import Error from "@/components/Error";
 
 const SVG_WIDTH = 1000;
 const SVG_HEIGHT = 200;
@@ -13,8 +15,9 @@ const MAIN_Y = 60;
 const ALT_Y = 150;
 
 export default function Timeline() {
-  const [events, setEvents] = useState<Timeline[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Timeline | null>(null);
+
+  const { events, status } = useTimelines();
 
   const mainEvents = useMemo(
     () => events.filter((e) => e.branch === "main"),
@@ -43,10 +46,6 @@ export default function Timeline() {
     event: e,
   }));
 
-  useEffect(() => {
-    getTimelineEvents().then(setEvents);
-  }, []);
-
   function selectEvent(event: Timeline) {
     if (
       selectedEvent?.year === event.year &&
@@ -58,7 +57,9 @@ export default function Timeline() {
     }
   }
 
-  if (events.length === 0) return <Loading />;
+  if (status === STATUS.FAILED) return <Error />;
+
+  if (status === STATUS.LOADING || !point1955 || !point1985) return <Loading />;
 
   return (
     <div className="w-full px-8 mt-8">
@@ -99,47 +100,81 @@ export default function Timeline() {
           />
         )}
 
-        {mainPositions.map(({ x, y, event }) => (
-          <motion.g
-            key={event.year}
-            onClick={() => selectEvent(event)}
-            whileHover={{ scale: 1.3 }}
-            style={{ cursor: "pointer", transformOrigin: `${x}px ${y}px` }}
-          >
-            <circle cx={x} cy={y} r={10} fill="var(--primary)" />
-            <text
-              x={x}
-              y={y - 20}
-              textAnchor="middle"
-              fill="currentColor"
-              fontSize="14"
-              fontWeight="bold"
-            >
-              {event.year}
-            </text>
-          </motion.g>
-        ))}
+        {mainPositions.map(({ x, y, event }) => {
+          const isSelected =
+            selectedEvent?.year === event.year &&
+            selectedEvent?.branch === event.branch;
 
-        {altPositions.map(({ x, y, event }) => (
-          <motion.g
-            key={event.year}
-            onClick={() => selectEvent(event)}
-            whileHover={{ scale: 1.3 }}
-            style={{ cursor: "pointer", transformOrigin: `${x}px ${y}px` }}
-          >
-            <circle cx={x} cy={y} r={10} fill="var(--primary)" />
-            <text
-              x={x}
-              y={y - 20}
-              textAnchor="middle"
-              fill="currentColor"
-              fontSize="14"
-              fontWeight="bold"
+          return (
+            <motion.g
+              key={event.year}
+              onClick={() => selectEvent(event)}
+              whileHover={{ scale: isSelected ? 1 : 1.3 }}
+              style={{ cursor: "pointer", transformOrigin: `${x}px ${y}px` }}
             >
-              {event.year}
-            </text>
-          </motion.g>
-        ))}
+              <motion.circle
+                cx={x}
+                cy={y}
+                r={0}
+                animate={{ r: isSelected ? 16 : 10 }}
+                transition={{ duration: 0.2 }}
+                fill="var(--primary)"
+              />
+              <motion.text
+                x={x}
+                y={isSelected ? y - 30 : y - 20}
+                textAnchor="middle"
+                fill="currentColor"
+                fontWeight="bold"
+                animate={{
+                  fontSize: isSelected ? "18" : "14",
+                  fill: isSelected ? "var(--primary)" : "currentColor",
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                {event.year}
+              </motion.text>
+            </motion.g>
+          );
+        })}
+
+        {altPositions.map(({ x, y, event }) => {
+          const isSelected =
+            selectedEvent?.year === event.year &&
+            selectedEvent?.branch === event.branch;
+
+          return (
+            <motion.g
+              key={event.year}
+              onClick={() => selectEvent(event)}
+              whileHover={{ scale: isSelected ? 1 : 1.3 }}
+              style={{ cursor: "pointer", transformOrigin: `${x}px ${y}px` }}
+            >
+              <motion.circle
+                cx={x}
+                cy={y}
+                r={0}
+                animate={{ r: isSelected ? 16 : 10 }}
+                transition={{ duration: 0.2 }}
+                fill="var(--primary)"
+              />
+              <motion.text
+                x={x}
+                y={isSelected ? y - 30 : y - 20}
+                textAnchor="middle"
+                fill="currentColor"
+                fontWeight="bold"
+                animate={{
+                  fontSize: isSelected ? "18" : "14",
+                  fill: isSelected ? "var(--primary)" : "currentColor",
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                {event.year}
+              </motion.text>
+            </motion.g>
+          );
+        })}
       </svg>
 
       <AnimatePresence mode="wait">

@@ -82,7 +82,7 @@ export default function UserMenu() {
       )}
       {isTablet && (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger>
             <UserAvatar
               classes={avatarClass}
               imgSrc={session?.user?.image}
