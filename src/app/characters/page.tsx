@@ -1,5 +1,7 @@
 import { getCharacters } from "@/lib/api";
 import { CharacterCard, CharactersSearch } from "./_components";
+import Error from "@/components/Error";
+import { STATUS } from "@/types";
 
 export default async function CharactersPage({
   searchParams,
@@ -7,7 +9,11 @@ export default async function CharactersPage({
   searchParams: Promise<{ search?: string }>;
 }) {
   const { search } = await searchParams;
-  const characters = await getCharacters(search ?? "");
+  const res = await getCharacters(search ?? "");
+
+  if (res.status === STATUS.FAILED) return <Error message={res.error} />;
+
+  const characters = res.characters;
 
   return (
     <div className="pb-16 w-full flex flex-col gap-8">

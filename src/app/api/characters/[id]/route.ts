@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import { CharacterModel } from "@/models/Character";
+import { STATUS } from "@/types";
 
 export async function GET(
   request: Request,
@@ -11,8 +12,11 @@ export async function GET(
   const character = await CharacterModel.findById(id).lean();
 
   if (!character) {
-    return Response.json({ error: "Character not found" }, { status: 404 });
+    return Response.json(
+      { status: STATUS.FAILED, error: "Character not found" },
+      { status: 404 },
+    );
   }
 
-  return Response.json({ character });
+  return Response.json({ status: STATUS.SUCCESSFUL, character });
 }

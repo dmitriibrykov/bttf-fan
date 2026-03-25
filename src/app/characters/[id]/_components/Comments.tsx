@@ -24,12 +24,12 @@ export function Comments({ characterId }: Props) {
 
   return (
     <div className="flex flex-col w-full mr-auto">
-      <h2 className="mb-2">Comments Section</h2>
+      <h2 className="mb-6">Comments</h2>
       {comments && comments.length > 0 && (
         <div className="flex flex-col gap-2 w-full md:min-w-[600px] md:w-fit">
           {comments.map((comment, i) => (
             <React.Fragment key={comment._id}>
-              <SingleComment comment={comment} />
+              <SingleComment comment={comment} refetch={fetchComments} />
               {i < comments.length - 1 && <Separator />}
             </React.Fragment>
           ))}

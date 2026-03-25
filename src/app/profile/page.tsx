@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ProfilePicture } from "./_components";
 import { Spinner } from "@/components/ui/spinner";
+import { STATUS } from "@/types";
 
 export default function Profile() {
   const { data, update, status } = useSession();
@@ -49,14 +50,19 @@ export default function Profile() {
 
     const resData = await res.json();
 
-    if (resData.updatedUser.modifiedCount > 0) {
-      if (resData.imgSrc) {
+    if (
+      resData.status === STATUS.SUCCESSFUL &&
+      resData?.updatedUser?.modifiedCount > 0
+    ) {
+      if (resData?.imgSrc) {
         await update({ name, image: resData.imgSrc });
       } else {
         await update({ name });
       }
       toast.success("Profile updated!");
     }
+
+    if (resData.status === STATUS.FAILED) toast.error(resData.error);
 
     setIsSaving(false);
   };

@@ -10,9 +10,14 @@ export async function GET() {
 
     return Response.json({ timelineEvents, status: STATUS.SUCCESSFUL });
   } catch (e) {
-    return Response.json({
-      error: (e as Error).message,
-      status: STATUS.FAILED,
-    });
+    return Response.json(
+      {
+        error: (e as Error).message,
+        status: STATUS.FAILED,
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }

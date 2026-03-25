@@ -124,11 +124,11 @@ export default function Timeline() {
                 x={x}
                 y={isSelected ? y - 30 : y - 20}
                 textAnchor="middle"
-                fill="currentColor"
+                fill="var(--foreground)"
                 fontWeight="bold"
                 animate={{
                   fontSize: isSelected ? "18" : "14",
-                  fill: isSelected ? "var(--primary)" : "currentColor",
+                  fill: isSelected ? "var(--primary)" : "var(--foreground)",
                 }}
                 transition={{ duration: 0.2 }}
               >
@@ -162,11 +162,11 @@ export default function Timeline() {
                 x={x}
                 y={isSelected ? y - 30 : y - 20}
                 textAnchor="middle"
-                fill="currentColor"
+                fill="var(--foreground)"
                 fontWeight="bold"
                 animate={{
                   fontSize: isSelected ? "18" : "14",
-                  fill: isSelected ? "var(--primary)" : "currentColor",
+                  fill: isSelected ? "var(--primary)" : "var(--foreground)",
                 }}
                 transition={{ duration: 0.2 }}
               >

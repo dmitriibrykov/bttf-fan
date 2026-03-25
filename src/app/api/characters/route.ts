@@ -28,11 +28,16 @@ export async function GET(request: Request) {
       .sort({ name: 1 })
       .exec();
 
-    return Response.json({ characters });
+    return Response.json({ status: STATUS.SUCCESSFUL, characters });
   } catch (e) {
-    return Response.json({
-      status: STATUS.FAILED,
-      error: (e as Error).message,
-    });
+    return Response.json(
+      {
+        status: STATUS.FAILED,
+        error: (e as Error).message,
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }

@@ -2,6 +2,7 @@ import { getCharacter } from "@/lib/api";
 import { getAppearancePart } from "@/utils";
 import { Comments } from "./_components";
 import { Separator } from "@/components/ui/separator";
+import { STATUS } from "@/types";
 
 export default async function CharacterPage({
   params,
@@ -9,14 +10,16 @@ export default async function CharacterPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const character = await getCharacter(id);
+  const res = await getCharacter(id);
 
-  if (!character)
+  if (res.status === STATUS.FAILED)
     return (
       <div className="flex justify-center items-center w-full h-auto">
-        {!character && <h1>No character with such id found</h1>}
+        <h1>Error occured: {res.error}</h1>
       </div>
     );
+
+  const character = res.character;
 
   return (
     <div className="flex flex-col items-center w-full mx-auto h-auto gap-4 pb-4 px-4 md:gap-8 md:pb-8 md:px-8 pt-4">

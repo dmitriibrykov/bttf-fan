@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { getUserFromServerSession } from "@/lib/auth";
 import dbConnect from "@/lib/mongodb";
-import { CommentModel } from "@/models/Comment";
+import { type Comment, CommentModel } from "@/models/Comment";
+import { STATUS } from "@/types";
 
 export async function GET(req: Request) {
   try {
@@ -30,28 +31,76 @@ export async function GET(req: Request) {
       })
       .sort({ createdAt: -1 });
 
-    return Response.json({ comments });
+    return Response.json({ status: STATUS.SUCCESSFUL, comments });
   } catch (e) {
-    return Response.json({ message: (e as Error).message }, { status: 400 });
+    return Response.json(
+      { status: STATUS.FAILED, message: (e as Error).message },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(req: Request) {
-  await dbConnect();
-  const user = await getUserFromServerSession();
+  try {
+    await dbConnect();
+    const user = await getUserFromServerSession();
 
-  if (!user?.email) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    if (!user?.email) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { characterId, body } = await req.json();
+
+    const res = await CommentModel.create({
+      _character_id: new mongoose.Types.ObjectId(characterId),
+      body,
+      _user_email: user.email,
+      createdAt: new Date().toISOString(),
+    });
+
+    return Response.json({ status: STATUS.SUCCESSFUL, comment: res });
+  } catch (e) {
+    return Response.json({
+      status: STATUS.FAILED,
+      error: (e as Error).message,
+    });
   }
+}
 
-  const { characterId, body } = await req.json();
+export async function DELETE(req: Request) {
+  try {
+    await dbConnect();
 
-  const res = await CommentModel.create({
-    _character_id: new mongoose.Types.ObjectId(characterId),
-    body,
-    _user_email: user.email,
-    createdAt: new Date().toISOString(),
-  });
+    const user = await getUserFromServerSession();
 
-  return Response.json({ res });
+    if (!user?.email) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { commentId } = await req.json();
+
+    const comment = await CommentModel.findById<Comment>(commentId);
+
+    if (!comment || comment._user_email !== user.email) {
+      return Response.json(
+        {
+          status: STATUS.FAILED,
+          error: "Comment could be deleted only by its creator",
+        },
+        { status: 403 },
+      );
+    }
+
+    await CommentModel.deleteOne({ _id: commentId });
+
+    return Response.json({ status: STATUS.SUCCESSFUL });
+  } catch (e) {
+    return Response.json(
+      {
+        status: STATUS.FAILED,
+        error: (e as Error).message,
+      },
+      { status: 500 },
+    );
+  }
 }

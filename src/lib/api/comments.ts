@@ -1,4 +1,5 @@
 import { Comment } from "@/models/Comment";
+import { STATUS } from "@/types";
 
 export const getComments = async (characterId: string): Promise<Comment[]> => {
   const res = await fetch(
@@ -31,4 +32,25 @@ export const sendComment = async (
   } catch {
     return null;
   }
+};
+
+export const deleteComment = async (
+  commentId: string,
+): Promise<
+  { status: STATUS.SUCCESSFUL } | { status: STATUS.FAILED; error: string }
+> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
+    method: "DELETE",
+    body: JSON.stringify({
+      commentId,
+    }),
+  });
+
+  const response = await res.json();
+
+  console.log(res);
+
+  if (!res.ok) return { status: STATUS.FAILED, error: response.error };
+
+  return { status: STATUS.SUCCESSFUL };
 };

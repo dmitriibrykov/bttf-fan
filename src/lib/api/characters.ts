@@ -1,25 +1,36 @@
 import { Character } from "@/models/Character";
+import { ResponseFailed, ResponseSuccessfulBase } from "@/types";
 
-export const getCharacters = async (search: string): Promise<Character[]> => {
+export const getCharacters = async (
+  search: string,
+): Promise<
+  ResponseFailed | (ResponseSuccessfulBase & { characters: Character[] })
+> => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/characters?search=${search}`,
   );
-  const { characters } = await res.json();
-  return characters;
+  const data = await res.json();
+
+  return data;
 };
 
-export const getCharacter = async (id: string): Promise<Character | null> => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/characters/${id}`,
-    );
+export const getCharacter = async (
+  id: string,
+): Promise<
+  ResponseFailed | (ResponseSuccessfulBase & { character: Character })
+> => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/characters/${id}`,
+  );
 
-    if (!res.ok) return null;
+  const data = await res.json();
 
-    const data = await res.json();
-
-    return "character" in data ? data.character : null;
-  } catch {
-    return null;
+  if (!res.ok) {
+    return { error: data.error, status: data.status };
   }
+
+  return {
+    status: data.status,
+    character: data.character,
+  };
 };
