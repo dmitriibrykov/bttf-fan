@@ -13,3 +13,9 @@ export default async function ProfileLayout({
   }
   return <>{children}</>;
 }
+
+export async function generateMetadata() {
+  const user = await getUserFromServerSession();
+
+  return { title: user?.name ? `${user.name}'s profile` : "Your profile" };
+}

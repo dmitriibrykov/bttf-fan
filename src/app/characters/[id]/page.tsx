@@ -4,11 +4,20 @@ import { Comments } from "./_components";
 import { Separator } from "@/components/ui/separator";
 import { STATUS } from "@/types";
 
-export default async function CharacterPage({
-  params,
-}: {
+type Props = {
   params: Promise<{ id: string }>;
-}) {
+};
+
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params;
+  const res = await getCharacter(id);
+
+  if (res.status === STATUS.FAILED) return { title: "Error occured" };
+
+  return { title: res.character.name };
+}
+
+export default async function CharacterPage({ params }: Props) {
   const { id } = await params;
   const res = await getCharacter(id);
 

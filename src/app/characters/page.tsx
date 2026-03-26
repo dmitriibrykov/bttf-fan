@@ -3,6 +3,10 @@ import { CharacterCard, CharactersSearch } from "./_components";
 import Error from "@/components/Error";
 import { STATUS } from "@/types";
 
+export async function generateMetadata() {
+  return { title: `BttF Characters` };
+}
+
 export default async function CharactersPage({
   searchParams,
 }: {
