@@ -38,6 +38,7 @@ export function AddNewComment({ refetch }: Props) {
       {status === "authenticated" ? (
         <>
           <textarea
+            id="comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             className="border-1 border-primary rounded-md mb-4 p-2 w-full min-h-[150px]"

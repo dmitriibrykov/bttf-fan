@@ -44,6 +44,11 @@ export function SingleComment({ comment, refetch }: Props) {
           <p>{comment.body}</p>
         </div>
         <div className="flex flex-col items-end gap-4 min-w-fit">
+          <span className="text-muted-foreground text-sm">
+            {formatDistanceToNow(new Date(comment.createdAt), {
+              addSuffix: true,
+            })}
+          </span>
           {comment._user_email === session?.user?.email && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -67,11 +72,6 @@ export function SingleComment({ comment, refetch }: Props) {
               </AlertDialogContent>
             </AlertDialog>
           )}
-          <span className="text-muted-foreground text-sm">
-            {formatDistanceToNow(new Date(comment.createdAt), {
-              addSuffix: true,
-            })}
-          </span>
         </div>
       </div>
     </div>

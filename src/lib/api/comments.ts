@@ -1,37 +1,39 @@
 import { Comment } from "@/models/Comment";
-import { STATUS } from "@/types";
+import { ResponseFailed, ResponseSuccessfulBase, STATUS } from "@/types";
 
-export const getComments = async (characterId: string): Promise<Comment[]> => {
+type GetCommentsResponse =
+  | ResponseFailed
+  | (ResponseSuccessfulBase & { comments: Comment[] });
+
+export const getComments = async (
+  characterId: string,
+): Promise<GetCommentsResponse> => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/comments?characterId=${characterId}`,
   );
 
-  const { comments } = await res.json();
+  const data: GetCommentsResponse = await res.json();
 
-  return comments;
+  return data;
 };
 
 export const sendComment = async (
   characterId: string,
   comment: string,
-): Promise<Comment | null> => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
-      method: "POST",
-      body: JSON.stringify({
-        characterId,
-        body: comment,
-      }),
-    });
+): Promise<
+  ResponseFailed | (ResponseSuccessfulBase & { comment: Comment })
+> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
+    method: "POST",
+    body: JSON.stringify({
+      characterId,
+      body: comment,
+    }),
+  });
 
-    if (!res.ok) return null;
+  const data = await res.json();
 
-    const data = await res.json();
-
-    return data;
-  } catch {
-    return null;
-  }
+  return data;
 };
 
 export const deleteComment = async (
@@ -47,8 +49,6 @@ export const deleteComment = async (
   });
 
   const response = await res.json();
-
-  console.log(res);
 
   if (!res.ok) return { status: STATUS.FAILED, error: response.error };
 
