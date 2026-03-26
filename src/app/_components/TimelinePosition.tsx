@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Timeline } from "@/models/Timeline";
-import { useState } from "react";
 
 type Props = {
   event: Timeline;
@@ -30,6 +30,7 @@ export default function TimelinePosition({
       <motion.circle
         cx={x}
         cy={y}
+        initial={{ r: 10 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         animate={{ r: isSelected || isHovered ? 16 : 10 }}
