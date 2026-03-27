@@ -15,13 +15,12 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 
    ![main-timeline](/src/assets/readme/main-page.png?raw=true)
 
-3. ###Profile page
+3. ### Profile page
+
    ![profile-page](/src/assets/readme/profile-page.png?raw=true)
 
 4. ### Character profile with comments section
    ![profile-page](/src/assets/readme/character.png?raw=true)
-
----
 
 ## Tech Stack
 
@@ -33,8 +32,6 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 - **Animations:** Framer Motion
 - **Deployment:** Vercel
 
----
-
 ## Features
 
 - Server-side character search with MongoDB `$regex`
@@ -45,8 +42,6 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 - Interactive SVG timeline with alternate 1985 branch
 - Dark / Light theme switcher
 - Fully responsive
-
----
 
 ## Technical Highlights
 
@@ -64,8 +59,6 @@ Users select an image -> crop it in a modal using `react-easy-crop` → the crop
 
 **Auth-aware UI**
 Unauthenticated users can browse characters and read comments. Leaving a comment redirects to sign-in with a `callbackUrl` so users return to the same character page after login.
-
----
 
 ## Getting Started
 
