@@ -4,8 +4,6 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 
 **Live demo:** [bttf-fan.vercel.app](https://bttf-fan.vercel.app)
 
----
-
 ## Screenshots
 
 1. ### Characters page with search and film appearance indicators and different theme
