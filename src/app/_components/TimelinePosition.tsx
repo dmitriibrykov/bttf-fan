@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Timeline } from "@/models/Timeline";
+import { useMediaQuery } from "@/hooks";
 
 type Props = {
   event: Timeline;
@@ -19,7 +20,12 @@ export default function TimelinePosition({
   isSelected,
   selectEvent,
 }: Props) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [isHovered, setIsHovered] = useState(false);
+
+  const baseY = isMobile ? y - 40 : y - 20;
+  const baseR = isMobile ? 30 : 10;
+  const baseFontSize = isMobile ? "42" : "14";
 
   return (
     <motion.g
@@ -33,18 +39,21 @@ export default function TimelinePosition({
         initial={{ r: 10 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        animate={{ r: isSelected || isHovered ? 16 : 10 }}
+        animate={{ r: isSelected || isHovered ? baseR * 1.25 : baseR }}
         transition={{ duration: 0.2 }}
         fill="var(--primary)"
       />
       <motion.text
         x={x}
-        y={isSelected || isHovered ? y - 30 : y - 20}
+        y={isSelected || isHovered ? baseY - 10 : baseY}
         textAnchor="middle"
         fill="var(--foreground)"
         fontWeight="bold"
         animate={{
-          fontSize: isSelected || isHovered ? "18" : "14",
+          fontSize:
+            isSelected || isHovered
+              ? (Number(baseFontSize) * 1.25).toString()
+              : baseFontSize,
           fill: isSelected ? "var(--primary)" : "var(--foreground)",
         }}
         transition={{ duration: 0.2 }}

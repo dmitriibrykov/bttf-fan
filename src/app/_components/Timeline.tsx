@@ -7,19 +7,18 @@ import { type Timeline } from "@/models/Timeline";
 import { useMediaQuery, useTimelines } from "@/hooks";
 import { STATUS } from "@/types";
 import Error from "@/components/Error";
-import MobileVerticalMessage from "./MobileVerticalMessage";
 import TimelineContent from "./TimelineContent";
 import TimelinePosition from "./TimelinePosition";
 
-const SVG_WIDTH = 1000;
-const SVG_HEIGHT = 200;
-const PADDING = 20;
-const MAIN_Y = 60;
-const ALT_Y = 150;
-
 export default function Timeline() {
-  const isMobileVertical = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [selectedEvent, setSelectedEvent] = useState<Timeline | null>(null);
+
+  const SVG_WIDTH = 1000;
+  const SVG_HEIGHT = isMobile ? 280 : 200;
+  const PADDING = isMobile ? 60 : 20;
+  const MAIN_Y = 60;
+  const ALT_Y = isMobile ? 220 : 150;
 
   const { events, status } = useTimelines();
 
@@ -65,10 +64,8 @@ export default function Timeline() {
 
   if (status === STATUS.LOADING || !point1955 || !point1985) return <Loading />;
 
-  if (isMobileVertical) return <MobileVerticalMessage />;
-
   return (
-    <div className="w-full px-8 mt-8">
+    <div className="w-full px-2 md:px-8 mt-8">
       <svg
         viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
         className="w-full"
