@@ -64,8 +64,13 @@ export function SingleComment({ comment, refetch }: Props) {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={removeComment}>
+                  <AlertDialogCancel variant="secondary">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    variant="destructive"
+                    onClick={removeComment}
+                  >
                     Continue
                   </AlertDialogAction>
                 </AlertDialogFooter>

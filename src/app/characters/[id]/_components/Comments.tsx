@@ -22,9 +22,10 @@ export function Comments({ characterId }: Props) {
     <div className="flex flex-col w-full mr-auto">
       <h2 className="mb-6">Comments</h2>
       {status === STATUS.LOADING &&
+        !comments &&
         Array.from({ length: 3 }).map((_, i) => <CommentSkeleton key={i} />)}
       {comments && comments.length > 0 && (
-        <div className="flex flex-col gap-2 w-full md:min-w-[600px] md:w-fit">
+        <div className="flex flex-col gap-2 w-full md:w-[800px]">
           {comments.map((comment, i) => (
             <React.Fragment key={comment._id}>
               <SingleComment comment={comment} refetch={refetch} />
