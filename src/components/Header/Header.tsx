@@ -6,7 +6,8 @@ import Image from "next/image";
 import logo from "@/assets/logo.png";
 import UserMenu from "./UserMenu";
 import { usePathname } from "next/navigation";
-import { headerLinks } from "@/constants";
+import { navLinks } from "@/constants";
+import MobileMenu from "./MobileMenu";
 
 const ThemeSwitcher = dynamic(() => import("./ThemeSwitcher"), { ssr: false });
 
@@ -15,18 +16,21 @@ export function Header() {
 
   return (
     <header className="w-screen py-4 px-6 flex justify-between items-center border-b-2 border-transparent [border-image:linear-gradient(to_right,_#ff4500,_#ff8c00,_#ffd700,_#ff8c00,_#ff4500)_1]">
-      <Link href="/">
-        <Image
-          src={logo}
-          alt="logo"
-          width="0"
-          height="0"
-          sizes="100vw"
-          className="h-[40px] w-[92px]"
-          loading="eager"
-        />
-      </Link>
-      {headerLinks.map(({ href, label }) => {
+      <div className="flex gap-6">
+        <MobileMenu />
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="logo"
+            width="0"
+            height="0"
+            sizes="100vw"
+            className="h-[40px] w-[92px]"
+            loading="eager"
+          />
+        </Link>
+      </div>
+      {navLinks.map(({ href, label }) => {
         const isActive = pathname === href;
         const className = `hidden md:inline text-2xl font-bold border-b-4 transition-colors ${
           isActive
