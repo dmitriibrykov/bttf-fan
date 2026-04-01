@@ -8,11 +8,7 @@ type Props = {
 
 export default function UserAvatar({ classes, imgSrc, name }: Props) {
   return imgSrc ? (
-    <img
-      src={imgSrc}
-      alt="avatar"
-      className={`h-[30px] w-[30px] ${classes} rounded-full`}
-    />
+    <img src={imgSrc} alt="avatar" className={`${classes} rounded-full`} />
   ) : (
     <div
       className={`${classes} bg-muted flex items-center justify-center text-xl font-bold`}

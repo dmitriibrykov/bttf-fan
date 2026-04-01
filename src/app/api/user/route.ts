@@ -26,6 +26,7 @@ export async function PATCH(request: Request) {
       const dbUpdateRes = await UserModel.updateOne({ email }, { name });
 
       return Response.json({
+        status: STATUS.SUCCESSFUL,
         updatedUser: dbUpdateRes,
       });
     }
@@ -47,13 +48,10 @@ export async function PATCH(request: Request) {
 
     const newImgUrl = (cloudinaryRes as { secure_url: string }).secure_url;
 
-    const updates: { name?: string; image: string } = {
-      image: newImgUrl,
-    };
-
-    if (name) updates.name = name;
-
-    const dbUpdateRes = await UserModel.updateOne({ email }, updates);
+    const dbUpdateRes = await UserModel.updateOne(
+      { email },
+      { image: newImgUrl },
+    );
 
     return Response.json({
       status: STATUS.SUCCESSFUL,
@@ -63,6 +61,64 @@ export async function PATCH(request: Request) {
   } catch (e) {
     return Response.json(
       { status: STATUS.FAILED, error: (e as Error).message },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE() {
+  try {
+    await dbConnect();
+
+    const user = await getUserFromServerSession();
+
+    if (!user?.email) {
+      return Response.json(
+        { status: STATUS.FAILED, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
+    const cloudinaryRes: { result: string } = await new Promise(
+      (resolve, reject) => {
+        cloudinary.uploader.destroy(
+          `avatars/${user.email}`,
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        );
+      },
+    );
+
+    if (cloudinaryRes.result === "ok") {
+      await UserModel.updateOne(
+        { email: user.email },
+        { $set: { image: null } },
+      );
+
+      return Response.json({
+        status: STATUS.SUCCESSFUL,
+      });
+    } else {
+      return Response.json(
+        {
+          status: STATUS.FAILED,
+          error:
+            cloudinaryRes.result === "not found"
+              ? "There is no profile image"
+              : "Image was not deleted",
+          res: cloudinaryRes,
+        },
+        { status: 500 },
+      );
+    }
+  } catch (e) {
+    return Response.json(
+      {
+        status: STATUS.FAILED,
+        error: (e as Error).message,
+      },
       { status: 500 },
     );
   }

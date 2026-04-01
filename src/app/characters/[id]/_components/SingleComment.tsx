@@ -37,7 +37,11 @@ export function SingleComment({ comment, refetch }: Props) {
 
   return (
     <div className="flex gap-4 max-w-[800px]">
-      <UserAvatar imgSrc={comment.user.image} name={comment.user.name} />
+      <UserAvatar
+        imgSrc={comment.user.image}
+        name={comment.user.name}
+        classes="h-[30px] w-[30px]"
+      />
       <div className="flex w-full gap-4">
         <div className="flex flex-col gap-2 grow">
           <p className="font-bold">{comment.user.name ?? "???"}</p>
