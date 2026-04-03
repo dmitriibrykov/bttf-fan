@@ -50,7 +50,5 @@ export const deleteComment = async (
 
   const response = await res.json();
 
-  if (!res.ok) return { status: STATUS.FAILED, error: response.error };
-
-  return { status: STATUS.SUCCESSFUL };
+  return response;
 };
