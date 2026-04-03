@@ -1,8 +1,8 @@
 import { getCharacter } from "@/lib/api";
 import { getAppearancePart } from "@/utils";
-import { Comments } from "./_components";
 import { Separator } from "@/components/ui/separator";
 import { STATUS } from "@/types";
+import { CommentsWrapper } from "./_components";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -58,7 +58,7 @@ export default async function CharacterPage({ params }: Props) {
           </div>
         </div>
       </div>
-      <Comments characterId={id} />
+      <CommentsWrapper />
     </div>
   );
 }

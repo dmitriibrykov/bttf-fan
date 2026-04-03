@@ -3,13 +3,14 @@ import { ResponseFailed, ResponseSuccessfulBase, STATUS } from "@/types";
 
 type GetCommentsResponse =
   | ResponseFailed
-  | (ResponseSuccessfulBase & { comments: Comment[] });
+  | (ResponseSuccessfulBase & { comments: Comment[]; isMore: boolean });
 
 export const getComments = async (
   characterId: string,
+  skip?: number,
 ): Promise<GetCommentsResponse> => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/comments?characterId=${characterId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/comments?characterId=${characterId}&skip=${skip}`,
   );
 
   const data: GetCommentsResponse = await res.json();

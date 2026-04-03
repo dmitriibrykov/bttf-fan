@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { sendComment } from "@/lib/api";
 import { Spinner } from "@/components/ui/spinner";
-import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import { useCommentContext } from "./context";
+import { STATUS } from "@/types";
+import { Comment } from "@/models/Comment";
 
-type Props = {
-  refetch: () => void;
-};
-
-export function AddNewComment({ refetch }: Props) {
-  const { status } = useSession();
+export function AddNewComment() {
+  const { status, data: session } = useSession();
+  const { addNewComment } = useCommentContext();
   const { id: characterId } = useParams<{ id: string }>();
   const [newComment, setNewComment] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -20,8 +20,18 @@ export function AddNewComment({ refetch }: Props) {
   const send = async () => {
     setIsSending(true);
     const res = await sendComment(characterId, newComment);
-    if (res !== null) {
-      refetch();
+    if (res.status === STATUS.SUCCESSFUL) {
+      const newComment: Comment = {
+        ...res.comment,
+        likesCount: 0,
+        likedByMe: false,
+        replies: [],
+        user: {
+          name: session?.user?.name ?? "",
+          image: session?.user?.image ?? "",
+        },
+      };
+      addNewComment(newComment);
     } else {
       toast.error(
         "Something wrong happened while sending your comment. Please, try later!",

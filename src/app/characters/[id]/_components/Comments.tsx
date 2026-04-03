@@ -4,17 +4,14 @@ import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { SingleComment } from "./SingleComment";
 import { AddNewComment } from "./AddNewComment";
-import { useComments } from "@/hooks";
 import { STATUS } from "@/types";
 import Error from "@/components/Error";
 import CommentSkeleton from "./CommentSkeleton";
+import { useCommentContext } from "./context";
+import LoadMore from "./LoadMore";
 
-type Props = {
-  characterId: string;
-};
-
-export function Comments({ characterId }: Props) {
-  const { comments, status, error, refetch } = useComments(characterId);
+export function Comments() {
+  const { error, comments, status, fetchMore } = useCommentContext();
 
   if (status === STATUS.FAILED) return <Error message={error!} />;
 
@@ -28,13 +25,14 @@ export function Comments({ characterId }: Props) {
         <div className="flex flex-col gap-2 w-full md:w-[800px]">
           {comments.map((comment, i) => (
             <React.Fragment key={comment._id}>
-              <SingleComment comment={comment} refetch={refetch} />
+              <SingleComment comment={comment} refetch={fetchMore} />
               {i < comments.length - 1 && <Separator />}
             </React.Fragment>
           ))}
         </div>
       )}
-      <AddNewComment refetch={refetch} />
+      <LoadMore />
+      <AddNewComment />
     </div>
   );
 }

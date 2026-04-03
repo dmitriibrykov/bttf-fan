@@ -14,6 +14,7 @@ export type Comment = Base & {
     name: string;
     image: string;
   };
+  replies: Comment[];
   likesCount: number;
   likedByMe: boolean;
 };

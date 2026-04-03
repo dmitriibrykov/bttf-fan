@@ -10,12 +10,24 @@ export const GET = apiHandler(async (req) => {
 
   const { searchParams } = new URL(req.url);
   const characterId = searchParams.get("characterId");
+  const skipParam = searchParams.get("skip");
+  const skip = typeof skipParam === "string" ? Number(skipParam) : 0;
 
   const user = await getUserFromServerSession();
   const email = user?.email;
 
+  if (!characterId)
+    return Response.json({
+      status: STATUS.FAILED,
+      error: "No character id provided",
+    });
+
+  const allCommentsCount = await CommentModel.countDocuments({
+    _character_id: new mongoose.Types.ObjectId(characterId),
+  });
+
   const comments = await CommentModel.aggregate()
-    .match({ _character_id: new mongoose.Types.ObjectId(characterId ?? "") })
+    .match({ _character_id: new mongoose.Types.ObjectId(characterId) })
     .lookup({
       from: "users",
       localField: "_user_email",
@@ -47,9 +59,15 @@ export const GET = apiHandler(async (req) => {
       "user.emailVerified": 0,
       likes: 0,
     })
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(5);
 
-  return Response.json({ status: STATUS.SUCCESSFUL, comments });
+  return Response.json({
+    status: STATUS.SUCCESSFUL,
+    comments,
+    isMore: skip + comments.length < allCommentsCount ? true : false,
+  });
 });
 
 export const POST = apiHandler(async (req) => {
