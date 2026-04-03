@@ -20,42 +20,35 @@ export const GET = apiHandler(async (req) => {
   return Response.json({ status: STATUS.SUCCESSFUL, likes });
 });
 
-export async function POST(req: Request) {
-  try {
-    await dbConnect();
+export const POST = apiHandler(async (req) => {
+  await dbConnect();
 
-    const user = await getUserFromServerSession();
+  const user = await getUserFromServerSession();
 
-    if (!user?.email) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { commentId } = await req.json();
-
-    const like = await CommentLikeModel.findOne({
-      _comment_id: commentId,
-      _user_email: user.email,
-    });
-
-    console.log(like);
-
-    if (like) {
-      await CommentLikeModel.deleteOne({ _id: like._id });
-
-      return Response.json({ status: STATUS.SUCCESSFUL });
-    } else {
-      const newLike = await CommentLikeModel.create({
-        _comment_id: new mongoose.Types.ObjectId(commentId),
-        _user_email: user.email,
-        createdAt: new Date().toISOString(),
-      });
-
-      return Response.json({ status: STATUS.SUCCESSFUL, like: newLike });
-    }
-  } catch (e) {
-    return Response.json({
-      status: STATUS.FAILED,
-      error: (e as Error).message,
-    });
+  if (!user?.email) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
-}
+
+  const { commentId } = await req.json();
+
+  const like = await CommentLikeModel.findOne({
+    _comment_id: commentId,
+    _user_email: user.email,
+  });
+
+  console.log(like);
+
+  if (like) {
+    await CommentLikeModel.deleteOne({ _id: like._id });
+
+    return Response.json({ status: STATUS.SUCCESSFUL });
+  } else {
+    const newLike = await CommentLikeModel.create({
+      _comment_id: new mongoose.Types.ObjectId(commentId),
+      _user_email: user.email,
+      createdAt: new Date().toISOString(),
+    });
+
+    return Response.json({ status: STATUS.SUCCESSFUL, like: newLike });
+  }
+});
