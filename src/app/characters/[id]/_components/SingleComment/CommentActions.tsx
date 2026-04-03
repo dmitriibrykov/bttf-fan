@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 import { Heart, Trash2 } from "lucide-react";
 import { Comment } from "@/models/Comment";
 import {
@@ -11,12 +14,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useSession } from "next-auth/react";
-import { deleteComment, getCommentLikes, likeOrRemoveLike } from "@/lib/api";
+import { deleteComment, likeOrRemoveLike } from "@/lib/api";
 import { STATUS } from "@/types";
-import { toast } from "sonner";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { CommentLike } from "@/models/CommentLike";
 
 type Props = {
   comment: Comment;
@@ -26,30 +25,10 @@ type Props = {
 export default function CommentActions({ comment, refetch }: Props) {
   const { data: session, status } = useSession();
   const [isSending, setIsSending] = useState(false);
-  const [commentLikes, setCommentLikes] = useState<CommentLike[] | null>(null);
+  const [likesCount, setLikesCount] = useState(comment.likesCount);
+  const [likedByMe, setLikedByMe] = useState(comment.likedByMe);
 
-  const userLiked = useMemo(
-    () =>
-      !!commentLikes?.find((like) => like._user_email === session?.user?.email),
-    [commentLikes, session],
-  );
-
-  console.log(commentLikes);
-
-  const fetchCommentLikes = useCallback(async () => {
-    const res = await getCommentLikes(comment._id);
-
-    if (res.status === STATUS.FAILED) {
-      toast.error(res.error);
-    } else {
-      setCommentLikes(res.likes);
-    }
-  }, [comment._id]);
-
-  useEffect(() => {
-    fetchCommentLikes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const formatter = new Intl.NumberFormat("en", { notation: "compact" });
 
   const removeComment = async () => {
     const res = await deleteComment(comment._id);
@@ -68,13 +47,11 @@ export default function CommentActions({ comment, refetch }: Props) {
 
     if (res.status === STATUS.SUCCESSFUL) {
       if (res.like) {
-        setCommentLikes((likes) => (likes ?? []).concat(res.like!));
+        setLikesCount((count) => count + 1);
+        setLikedByMe(true);
       } else {
-        setCommentLikes((likes) =>
-          (likes ?? []).filter(
-            (like) => like._user_email !== session?.user?.email,
-          ),
-        );
+        setLikesCount((count) => count - 1);
+        setLikedByMe(false);
       }
     } else {
       toast.error(res.error);
@@ -84,13 +61,16 @@ export default function CommentActions({ comment, refetch }: Props) {
   };
 
   return status === "authenticated" ? (
-    <div className="flex gap-2 items-center">
-      <Heart
-        className="cursor-pointer hover:opacity-80"
-        fill={userLiked ? "red" : "none"}
-        color={userLiked ? "red" : "white"}
-        onClick={reactToComment}
-      />
+    <div className="flex gap-4 items-end">
+      <div className="flex items-center gap-1">
+        <Heart
+          className="cursor-pointer hover:opacity-80"
+          fill={likedByMe ? "red" : "none"}
+          color={likedByMe ? "red" : "white"}
+          onClick={reactToComment}
+        />
+        <p className="text-foreground/80">{formatter.format(likesCount)}</p>
+      </div>
       {comment._user_email === session?.user?.email && (
         <AlertDialog>
           <AlertDialogTrigger asChild>

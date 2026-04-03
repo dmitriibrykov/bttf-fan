@@ -15,15 +15,3 @@ export async function likeOrRemoveLike(
 
   return response;
 }
-
-export async function getCommentLikes(
-  commentId: string,
-): Promise<
-  ResponseFailed | (ResponseSuccessfulBase & { likes: CommentLike[] })
-> {
-  const res = (
-    await fetch(`/api/comments/likes?commentId=${commentId}`)
-  ).json();
-
-  return res;
-}

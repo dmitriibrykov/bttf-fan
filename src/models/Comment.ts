@@ -14,6 +14,8 @@ export type Comment = Base & {
     name: string;
     image: string;
   };
+  likesCount: number;
+  likedByMe: boolean;
 };
 
 const commentSchema = new mongoose.Schema<Base>(

@@ -11,6 +11,9 @@ export const GET = apiHandler(async (req) => {
   const { searchParams } = new URL(req.url);
   const characterId = searchParams.get("characterId");
 
+  const user = await getUserFromServerSession();
+  const email = user?.email;
+
   const comments = await CommentModel.aggregate()
     .match({ _character_id: new mongoose.Types.ObjectId(characterId ?? "") })
     .lookup({
@@ -23,11 +26,26 @@ export const GET = apiHandler(async (req) => {
       path: "$user",
       preserveNullAndEmptyArrays: true,
     })
+    .lookup({
+      from: "commentlikes",
+      localField: "_id",
+      foreignField: "_comment_id",
+      as: "likes",
+    })
+    .addFields({
+      likesCount: {
+        $size: "$likes",
+      },
+      likedByMe: {
+        $in: [email, "$likes._user_email"],
+      },
+    })
     .project({
       "user.password": 0,
       "user.email": 0,
       "user._id": 0,
       "user.emailVerified": 0,
+      likes: 0,
     })
     .sort({ createdAt: -1 });
 
