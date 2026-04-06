@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { AvatarCropper } from "./AvatarCropper";
 import UserAvatar from "@/components/UserAvatar";
-import { useUserUpdate } from "@/hooks/useUserUpdate";
+import { useUserUpdate } from "@/hooks";
 import { STATUS } from "@/types";
 import { Spinner } from "@/components/ui/spinner";
 import { CircleX } from "lucide-react";

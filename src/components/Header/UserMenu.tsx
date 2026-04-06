@@ -11,13 +11,15 @@ import {
 } from "../ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import UserAvatar from "../UserAvatar";
+import { useIsUserLoggedIn } from "@/hooks";
 
 const avatarClass =
   "h-[50px] w-[50px] min-w-[50px] min-h-[50px] cursor-pointer";
 
 export default function UserMenu() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const isLoggedIn = useIsUserLoggedIn();
 
   return (
     <DropdownMenu>
@@ -29,7 +31,7 @@ export default function UserMenu() {
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-2 rounded-md p-2">
-        {status === "authenticated" ? (
+        {isLoggedIn ? (
           <DropdownMenuGroup>
             <DropdownMenuItem
               onSelect={() => router.push("/profile")}

@@ -3,13 +3,14 @@ import { ResponseFailed, ResponseSuccessfulBase, STATUS } from "@/types";
 
 type GetCommentsResponse =
   | ResponseFailed
-  | (ResponseSuccessfulBase & { comments: Comment[] });
+  | (ResponseSuccessfulBase & { comments: Comment[]; isMore: boolean });
 
 export const getComments = async (
   characterId: string,
+  skip?: number,
 ): Promise<GetCommentsResponse> => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/comments?characterId=${characterId}`,
+    `/api/comments?characterId=${characterId}&skip=${skip}`,
   );
 
   const data: GetCommentsResponse = await res.json();
@@ -20,14 +21,35 @@ export const getComments = async (
 export const sendComment = async (
   characterId: string,
   comment: string,
+  parentId?: string,
 ): Promise<
   ResponseFailed | (ResponseSuccessfulBase & { comment: Comment })
 > => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
+  const res = await fetch("/api/comments", {
     method: "POST",
     body: JSON.stringify({
       characterId,
       body: comment,
+      parentId,
+    }),
+  });
+
+  const data = await res.json();
+
+  return data;
+};
+
+export const updateComment = async (
+  commentId: string,
+  body: string,
+): Promise<
+  ResponseFailed | (ResponseSuccessfulBase & { updatedComment: Comment })
+> => {
+  const res = await fetch("/api/comments", {
+    method: "PATCH",
+    body: JSON.stringify({
+      commentId,
+      body,
     }),
   });
 
@@ -41,7 +63,7 @@ export const deleteComment = async (
 ): Promise<
   { status: STATUS.SUCCESSFUL } | { status: STATUS.FAILED; error: string }
 > => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
+  const res = await fetch("/api/comments", {
     method: "DELETE",
     body: JSON.stringify({
       commentId,
@@ -50,7 +72,5 @@ export const deleteComment = async (
 
   const response = await res.json();
 
-  if (!res.ok) return { status: STATUS.FAILED, error: response.error };
-
-  return { status: STATUS.SUCCESSFUL };
+  return response;
 };
