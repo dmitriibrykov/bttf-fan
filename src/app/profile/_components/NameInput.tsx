@@ -10,7 +10,7 @@ import { debounce } from "lodash-es";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
-import { useUserUpdate } from "@/hooks/useUserUpdate";
+import { useUserUpdate } from "@/hooks";
 import { STATUS } from "@/types";
 
 export function NameInput() {

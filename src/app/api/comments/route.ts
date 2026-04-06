@@ -90,6 +90,26 @@ export const POST = apiHandler(async (req) => {
   return Response.json({ status: STATUS.SUCCESSFUL, comment: res });
 });
 
+export const PATCH = apiHandler(async (req) => {
+  await dbConnect();
+  const user = await getUserFromServerSession();
+
+  if (!user?.email) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { commentId, body } = await req.json();
+
+  await CommentModel.updateOne(
+    { _id: commentId },
+    { body, updatedAt: new Date().toISOString },
+  );
+
+  const updatedComment = await CommentModel.findById(commentId);
+
+  return Response.json({ status: STATUS.SUCCESSFUL, updatedComment });
+});
+
 export const DELETE = apiHandler(async (req) => {
   await dbConnect();
 

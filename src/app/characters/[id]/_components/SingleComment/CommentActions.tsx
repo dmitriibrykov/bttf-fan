@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
-import { Heart, Trash2 } from "lucide-react";
+import { Heart, Pencil, Trash2 } from "lucide-react";
 import { Comment } from "@/models/Comment";
 import {
   AlertDialog,
@@ -16,24 +16,28 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteComment, likeOrRemoveLike } from "@/lib/api";
 import { STATUS } from "@/types";
+import { useCommentContext } from "../context";
+import { useIsUserLoggedIn } from "@/hooks";
 
 type Props = {
   comment: Comment;
-  refetch(): void;
+  startEditing(): void;
 };
 
-export default function CommentActions({ comment, refetch }: Props) {
-  const { data: session, status } = useSession();
+export default function CommentActions({ comment, startEditing }: Props) {
+  const { data: session } = useSession();
   const [isSending, setIsSending] = useState(false);
   const [likesCount, setLikesCount] = useState(comment.likesCount);
   const [likedByMe, setLikedByMe] = useState(comment.likedByMe);
+  const { deleteComment: removeCommentFromCtx } = useCommentContext();
+  const isLoggedIn = useIsUserLoggedIn();
 
   const formatter = new Intl.NumberFormat("en", { notation: "compact" });
 
   const removeComment = async () => {
     const res = await deleteComment(comment._id);
     if (res.status === STATUS.SUCCESSFUL) {
-      refetch();
+      removeCommentFromCtx(comment._id);
     } else {
       toast.error(res.error);
     }
@@ -60,7 +64,7 @@ export default function CommentActions({ comment, refetch }: Props) {
     setIsSending(false);
   };
 
-  return status === "authenticated" ? (
+  return isLoggedIn ? (
     <div className="flex gap-4 items-end">
       <div className="flex items-center gap-1">
         <Heart
@@ -72,27 +76,38 @@ export default function CommentActions({ comment, refetch }: Props) {
         <p className="text-foreground/80">{formatter.format(likesCount)}</p>
       </div>
       {comment._user_email === session?.user?.email && (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Trash2 className="cursor-pointer" />
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                Are you sure you want to delete this comment?
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                This action is irrevertible
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel variant="secondary">Cancel</AlertDialogCancel>
-              <AlertDialogAction variant="destructive" onClick={removeComment}>
-                Continue
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <>
+          <Pencil
+            onClick={startEditing}
+            className="cursor-pointer hover:opacity-75"
+          />
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Trash2 className="cursor-pointer hover:opacity-75" />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Are you sure you want to delete this comment?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action is irrevertible
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel variant="secondary">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={removeComment}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )}
     </div>
   ) : null;

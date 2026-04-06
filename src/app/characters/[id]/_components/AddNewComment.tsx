@@ -9,13 +9,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { useCommentContext } from "./context";
 import { STATUS } from "@/types";
 import { Comment } from "@/models/Comment";
+import { useIsUserLoggedIn } from "@/hooks";
 
 export function AddNewComment() {
-  const { status, data: session } = useSession();
-  const { addNewComment } = useCommentContext();
-  const { id: characterId } = useParams<{ id: string }>();
   const [newComment, setNewComment] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const { id: characterId } = useParams<{ id: string }>();
+  const { data: session } = useSession();
+  const { addNewComment } = useCommentContext();
+  const isLoggedIn = useIsUserLoggedIn();
 
   const send = async () => {
     setIsSending(true);
@@ -45,7 +47,7 @@ export function AddNewComment() {
   return (
     <div className="flex flex-col max-w-[500px] w-full">
       <p className="mt-4">Leave your comment:</p>
-      {status === "authenticated" ? (
+      {isLoggedIn ? (
         <>
           <textarea
             id="comment"
