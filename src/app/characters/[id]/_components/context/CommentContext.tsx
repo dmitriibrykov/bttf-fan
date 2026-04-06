@@ -20,7 +20,7 @@ type CommentContextType = {
   fetchMore(skip?: number): Promise<void>;
   addNewComment(comment: Comment): void;
   editComment(commentId: string, body: string): Promise<void>;
-  deleteComment(commentId: string): void;
+  deleteComment(comment: Comment): void;
 };
 
 export const CommentContext = createContext<CommentContextType | null>(null);
@@ -63,24 +63,80 @@ export function CommentContextProvider({ characterId, children }: Props) {
     const res = await updateComment(commentId, body);
 
     if (res.status === STATUS.SUCCESSFUL) {
-      setComments((comments) => {
-        const comm = (comments ?? []).find(
-          (comment) => comment._id === commentId,
+      const comment = res.updatedComment;
+      if (comment._parent_id) {
+        const parentComment = (comments ?? []).find(
+          (c) => c._id === comment._parent_id,
         );
-        if (comm) {
-          comm.body = body;
+
+        if (parentComment) {
+          const updatedParent = {
+            ...parentComment,
+            replies: parentComment.replies.map((r) =>
+              r._id === comment._id
+                ? { ...r, body, updatedAt: comment.updatedAt }
+                : r,
+            ),
+          };
+
+          setComments((comments) =>
+            comments!.map((c) => {
+              if (c._id === parentComment._id) return updatedParent;
+              return c;
+            }),
+          );
         }
-        return comments;
-      });
+      } else {
+        setComments((comments) =>
+          (comments ?? []).map((c) =>
+            c._id === commentId
+              ? { ...c, body, updatedAt: res.updatedComment.updatedAt }
+              : c,
+          ),
+        );
+      }
     }
   };
 
   const addNewComment = (comment: Comment) => {
-    setComments((comments) => [comment].concat(comments ?? []));
+    if (comment._parent_id) {
+      const parentComment = (comments ?? []).find(
+        (c) => c._id === comment._parent_id,
+      );
+
+      if (parentComment) {
+        const newParent = {
+          ...parentComment,
+          replies: [...parentComment.replies, comment],
+        };
+        const updatedComments = comments!.map((c) => {
+          if (c._id === newParent._id) return newParent;
+          return c;
+        });
+        setComments(updatedComments);
+      }
+    } else {
+      setComments((comments) => [comment].concat(comments ?? []));
+    }
   };
 
-  const deleteComment = async (commentId: string) => {
-    setComments((comments ?? []).filter((c) => c._id !== commentId));
+  const deleteComment = async (comment: Comment) => {
+    if (comment._parent_id) {
+      const parentComm = comments!.find((c) => c._id === comment._parent_id);
+      if (parentComm) {
+        const clearedReplies = Array.from(
+          parentComm.replies.filter((reply) => reply._id !== comment._id),
+        );
+        const updatedParent = { ...parentComm, replies: clearedReplies };
+        setComments((comments) =>
+          comments!.map((c) => (c._id === parentComm._id ? updatedParent : c)),
+        );
+      }
+    } else {
+      setComments((comments) =>
+        (comments ?? []).filter((c) => c._id !== comment._id),
+      );
+    }
   };
 
   return (

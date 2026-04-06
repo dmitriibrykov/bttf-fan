@@ -21,6 +21,7 @@ export const getComments = async (
 export const sendComment = async (
   characterId: string,
   comment: string,
+  parentId?: string,
 ): Promise<
   ResponseFailed | (ResponseSuccessfulBase & { comment: Comment })
 > => {
@@ -29,6 +30,7 @@ export const sendComment = async (
     body: JSON.stringify({
       characterId,
       body: comment,
+      parentId,
     }),
   });
 

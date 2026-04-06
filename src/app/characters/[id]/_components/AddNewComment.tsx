@@ -11,7 +11,12 @@ import { STATUS } from "@/types";
 import { Comment } from "@/models/Comment";
 import { useIsUserLoggedIn } from "@/hooks";
 
-export function AddNewComment() {
+type Props = {
+  parentId?: string;
+  hide?: () => void;
+};
+
+export function AddNewComment({ parentId, hide }: Props) {
   const [newComment, setNewComment] = useState("");
   const [isSending, setIsSending] = useState(false);
   const { id: characterId } = useParams<{ id: string }>();
@@ -21,9 +26,9 @@ export function AddNewComment() {
 
   const send = async () => {
     setIsSending(true);
-    const res = await sendComment(characterId, newComment);
+    const res = await sendComment(characterId, newComment, parentId);
     if (res.status === STATUS.SUCCESSFUL) {
-      const newComment: Comment = {
+      const createdComment: Comment = {
         ...res.comment,
         likesCount: 0,
         likedByMe: false,
@@ -33,7 +38,7 @@ export function AddNewComment() {
           image: session?.user?.image ?? "",
         },
       };
-      addNewComment(newComment);
+      addNewComment(createdComment);
     } else {
       toast.error(
         "Something wrong happened while sending your comment. Please, try later!",
@@ -42,32 +47,46 @@ export function AddNewComment() {
 
     setNewComment("");
     setIsSending(false);
+    hide?.();
   };
 
   return (
-    <div className="flex flex-col max-w-[500px] w-full">
-      <p className="mt-4">Leave your comment:</p>
+    <div className="flex flex-col w-full md:w-[800px]">
+      <p className="mt-4 mb-2">
+        {parentId ? "Reply to the comment above" : "Leave your comment"}:
+      </p>
       {isLoggedIn ? (
         <>
           <textarea
             id="comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="border-1 border-primary rounded-md mb-4 p-2 w-full min-h-[150px]"
+            className={`border-1 border-primary rounded-md mb-4 p-2 w-full ${parentId ? "min-h-[80px]" : "min-h-[150px]"}`}
           />
-          <Button
-            onClick={send}
-            disabled={newComment.length === 0}
-            className="w-[300px] h-[50px] ml-auto"
-          >
-            {isSending && (
-              <>
-                <Spinner />
-                <span>Sending...</span>
-              </>
+          <div className="flex justify-end gap-8">
+            {hide && (
+              <Button
+                onClick={hide}
+                className="grow h-[50px]"
+                variant="outline"
+              >
+                Cancel
+              </Button>
             )}
-            {!isSending && <span>Send Comment</span>}
-          </Button>
+            <Button
+              onClick={send}
+              disabled={newComment.length === 0}
+              className={`h-[50px] ${hide ? "grow" : "w-[300px] ml-auto"}`}
+            >
+              {isSending && (
+                <>
+                  <Spinner />
+                  <span>Sending...</span>
+                </>
+              )}
+              {!isSending && <span>Send Comment</span>}
+            </Button>
+          </div>
         </>
       ) : (
         <Button className="w-[300px] h-[50px] mt-4">

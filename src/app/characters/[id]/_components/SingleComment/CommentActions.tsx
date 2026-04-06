@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
-import { Heart, Pencil, Trash2 } from "lucide-react";
+import { Heart, Pencil, Reply, Trash2 } from "lucide-react";
 import { Comment } from "@/models/Comment";
 import {
   AlertDialog,
@@ -19,12 +19,19 @@ import { STATUS } from "@/types";
 import { useCommentContext } from "../context";
 import { useIsUserLoggedIn } from "@/hooks";
 
+const ICON_SIZE = 16;
+
 type Props = {
   comment: Comment;
   startEditing(): void;
+  startReplying(): void;
 };
 
-export default function CommentActions({ comment, startEditing }: Props) {
+export default function CommentActions({
+  comment,
+  startEditing,
+  startReplying,
+}: Props) {
   const { data: session } = useSession();
   const [isSending, setIsSending] = useState(false);
   const [likesCount, setLikesCount] = useState(comment.likesCount);
@@ -37,7 +44,7 @@ export default function CommentActions({ comment, startEditing }: Props) {
   const removeComment = async () => {
     const res = await deleteComment(comment._id);
     if (res.status === STATUS.SUCCESSFUL) {
-      removeCommentFromCtx(comment._id);
+      removeCommentFromCtx(comment);
     } else {
       toast.error(res.error);
     }
@@ -65,25 +72,37 @@ export default function CommentActions({ comment, startEditing }: Props) {
   };
 
   return isLoggedIn ? (
-    <div className="flex gap-4 items-end">
+    <div className="flex gap-2 justify-center items-center">
       <div className="flex items-center gap-1">
         <Heart
           className="cursor-pointer hover:opacity-80"
+          size={ICON_SIZE}
           fill={likedByMe ? "red" : "none"}
           color={likedByMe ? "red" : "white"}
           onClick={reactToComment}
         />
         <p className="text-foreground/80">{formatter.format(likesCount)}</p>
       </div>
+      {isLoggedIn && !comment._parent_id && (
+        <Reply
+          onClick={startReplying}
+          className="cursor-pointer hover:opacity-75"
+          size={ICON_SIZE}
+        />
+      )}
       {comment._user_email === session?.user?.email && (
         <>
           <Pencil
             onClick={startEditing}
+            size={ICON_SIZE}
             className="cursor-pointer hover:opacity-75"
           />
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Trash2 className="cursor-pointer hover:opacity-75" />
+              <Trash2
+                size={ICON_SIZE}
+                className="cursor-pointer hover:opacity-75"
+              />
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -95,9 +114,7 @@ export default function CommentActions({ comment, startEditing }: Props) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel variant="secondary">
-                  Cancel
-                </AlertDialogCancel>
+                <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   variant="destructive"
                   onClick={removeComment}
