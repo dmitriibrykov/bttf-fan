@@ -20,7 +20,7 @@ export function SingleComment({ comment }: Props) {
         <MainContent comment={comment} />
         {!comment._parent_id && comment.replies.length > 0 && (
           <>
-            <Separator className="mb-8 mt-2" />
+            <Separator className="my-2" />
             <div className="flex flex-col gap-4 -ml-4 md:ml-8">
               {comment.replies.map((c, i) => (
                 <React.Fragment key={c._id}>
