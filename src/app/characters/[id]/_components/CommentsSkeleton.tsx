@@ -15,5 +15,11 @@ function CommentSkeleton() {
 }
 
 export default function CommentsSkeleton() {
-  return Array.from({ length: 3 }).map((_, i) => <CommentSkeleton key={i} />);
+  return (
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <CommentSkeleton key={i} />
+      ))}
+    </div>
+  );
 }
