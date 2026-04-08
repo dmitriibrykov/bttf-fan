@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import Loading from "../loading";
+import Loading from "../../loading";
 import { type Timeline } from "@/models/Timeline";
 import { useMediaQuery, useTimelines } from "@/hooks";
 import { STATUS } from "@/types";

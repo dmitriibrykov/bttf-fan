@@ -43,7 +43,7 @@ export default async function CharacterPage({ params }: Props) {
           <Separator />
           <h2>Who played: {character.actor ?? ""}</h2>
           <Separator />
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <p>Appeared in:</p>
             <div className="flex gap-2">
               {character.appearance.map((app) => (

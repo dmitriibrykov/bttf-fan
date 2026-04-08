@@ -13,6 +13,8 @@ export const useTimelines = (): Payload => {
   const [status, setStatus] = useState<STATUS>(STATUS.IDLE);
 
   const fetchTimelines = useCallback(async () => {
+    if (events.length > 0) return;
+
     setStatus(STATUS.LOADING);
     const res = await getTimelineEvents();
 
@@ -21,7 +23,7 @@ export const useTimelines = (): Payload => {
       setStatus(STATUS.SUCCESSFUL);
     }
     if (res.status === STATUS.FAILED) setStatus(STATUS.FAILED);
-  }, []);
+  }, [events.length]);
 
   useEffect(() => {
     fetchTimelines();
