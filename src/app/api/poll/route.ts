@@ -18,16 +18,9 @@ export const GET = apiHandler(async () => {
   await dbConnect();
   const user = await getUserFromServerSession();
 
-  if (!user?.email) {
-    return Response.json(
-      { status: STATUS.FAILED, error: "Unauthorized" },
-      { status: 401 },
-    );
-  }
-
   const [pollRes, myPoll] = (await Promise.all([
     PollResultModel.find({}).lean(),
-    PollResultModel.findOne({ _user_email: user.email }).lean(),
+    PollResultModel.findOne({ _user_email: user?.email }).lean(),
   ])) as [PollResult[], PollResult | null];
 
   const answers: Record<number, Record<number, number>> = {};
@@ -63,7 +56,7 @@ export const GET = apiHandler(async () => {
           count: answers[qIndex][optionIdx],
           percentage: Number.isNaN(rawPercentage)
             ? 0
-            : Math.floor(rawPercentage),
+            : Math.round(rawPercentage),
         };
       }),
     });
@@ -71,7 +64,26 @@ export const GET = apiHandler(async () => {
 
   return Response.json({
     status: STATUS.SUCCESSFUL,
-    meParticipated: !!myPoll,
+    meParticipated: myPoll,
     results,
   });
+});
+
+export const POST = apiHandler(async (req) => {
+  await dbConnect();
+  const user = await getUserFromServerSession();
+
+  if (!user?.email) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { answers } = await req.json();
+
+  const res = await PollResultModel.create({
+    _user_email: user.email,
+    answers,
+    createdAt: new Date().toISOString(),
+  });
+
+  return Response.json({ status: STATUS.SUCCESSFUL, poll: res });
 });

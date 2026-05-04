@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SwiperCore from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,20 +16,25 @@ import {
 } from "@/components/ui/alert-dialog";
 import { pollData } from "@/constants/poll";
 import { Button } from "@/components/ui/button";
+import { savePoll } from "@/lib/api";
+import { STATUS } from "@/types";
 
 import "swiper/css";
+import { Spinner } from "@/components/ui/spinner";
 
 type Props = {
   closePoll(): void;
+  refetch(): Promise<void>;
 };
 
-export default function Poll({ closePoll }: Props) {
+export default function Poll({ closePoll, refetch }: Props) {
   const [isAlert, setIsAlert] = useState(false);
   const [swiper, setSwiper] = useState<SwiperCore | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [questionIndex: number]: number }>(
     {},
   );
+  const [isSaving, setIsSaving] = useState(false);
 
   const totalQuestions = pollData.questions.length;
 
@@ -37,6 +43,23 @@ export default function Poll({ closePoll }: Props) {
       ...answers,
       [qIdx]: aIdx,
     }));
+  };
+
+  const saveAnswers = async () => {
+    setIsSaving(true);
+
+    const res = await savePoll(Object.values(answers));
+
+    if (res.status === STATUS.FAILED) {
+      toast.error(res.error);
+      setIsSaving(false);
+    }
+    if (res.status === STATUS.SUCCESSFUL) {
+      toast.success("Your poll is saved! Thank you for participating!");
+      setIsSaving(false);
+      await refetch();
+      closePoll();
+    }
   };
 
   return (
@@ -94,8 +117,17 @@ export default function Poll({ closePoll }: Props) {
             </Button>
           )}
           {activeIndex === totalQuestions - 1 && (
-            <Button className="w-[200px] h-[50px] rounded-md ml-auto">
-              Submit
+            <Button
+              className="w-[200px] h-[50px] rounded-md ml-auto"
+              onClick={saveAnswers}
+            >
+              {isSaving && (
+                <>
+                  <Spinner />
+                  <span>Saving...</span>
+                </>
+              )}
+              {!isSaving && <span>Submit</span>}
             </Button>
           )}
         </div>
