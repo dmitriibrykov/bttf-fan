@@ -1,18 +1,32 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Error from "@/components/Error";
 import { getMovies } from "@/lib/api";
-import { STATUS } from "@/types";
+import { Omdb, ResponseFailed, ResponseSuccessfulBase, STATUS } from "@/types";
 import { formatter } from "@/utils";
 
-export async function Movies() {
-  const data = await getMovies();
+export function Movies() {
+  const [data, setData] = useState<
+    ResponseFailed | (ResponseSuccessfulBase & { movies: Omdb[] }) | null
+  >(null);
 
-  if (data.status === STATUS.FAILED) return <Error message={data.error} />;
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getMovies();
+      setData(res);
+    };
+
+    fetchData();
+  }, []);
+
+  if (data?.status === STATUS.FAILED) return <Error message={data.error} />;
 
   return (
     <div className="w-full flex flex-col gap-4">
       <h2>Movies Information</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 w-full gap-x-2 gap-y-8">
-        {data.movies.map((movie) => (
+        {data?.movies.map((movie) => (
           <div key={movie.Title} className="flex gap-2">
             <img
               src={movie.Poster}
