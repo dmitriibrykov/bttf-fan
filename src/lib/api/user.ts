@@ -9,7 +9,7 @@ export async function updateUser(data: FormData): Promise<
       imgSrc: string;
     })
 > {
-  const res = await fetch("/api/user", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
     method: "PATCH",
     body: data,
   });
@@ -20,7 +20,7 @@ export async function updateUser(data: FormData): Promise<
 export async function deleteImage(): Promise<
   ResponseFailed | ResponseSuccessfulBase
 > {
-  const res = await fetch("/api/user", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
     method: "DELETE",
   });
 

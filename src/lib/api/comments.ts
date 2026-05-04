@@ -10,7 +10,7 @@ export const getComments = async (
   skip?: number,
 ): Promise<GetCommentsResponse> => {
   const res = await fetch(
-    `/api/comments?characterId=${characterId}&skip=${skip}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/comments?characterId=${characterId}&skip=${skip}`,
   );
 
   const data: GetCommentsResponse = await res.json();
@@ -25,7 +25,7 @@ export const sendComment = async (
 ): Promise<
   ResponseFailed | (ResponseSuccessfulBase & { comment: Comment })
 > => {
-  const res = await fetch("/api/comments", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments"`, {
     method: "POST",
     body: JSON.stringify({
       characterId,
@@ -45,7 +45,7 @@ export const updateComment = async (
 ): Promise<
   ResponseFailed | (ResponseSuccessfulBase & { updatedComment: Comment })
 > => {
-  const res = await fetch("/api/comments", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
     method: "PATCH",
     body: JSON.stringify({
       commentId,
@@ -63,7 +63,7 @@ export const deleteComment = async (
 ): Promise<
   { status: STATUS.SUCCESSFUL } | { status: STATUS.FAILED; error: string }
 > => {
-  const res = await fetch("/api/comments", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
     method: "DELETE",
     body: JSON.stringify({
       commentId,
