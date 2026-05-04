@@ -18,6 +18,7 @@ import { deleteComment, likeOrRemoveLike } from "@/lib/api";
 import { STATUS } from "@/types";
 import { useCommentContext } from "../context";
 import { useIsUserLoggedIn } from "@/hooks";
+import { formatter } from "@/utils";
 
 const ICON_SIZE = 16;
 
@@ -38,8 +39,6 @@ export default function CommentActions({
   const [likedByMe, setLikedByMe] = useState(comment.likedByMe);
   const { deleteComment: removeCommentFromCtx } = useCommentContext();
   const isLoggedIn = useIsUserLoggedIn();
-
-  const formatter = new Intl.NumberFormat("en", { notation: "compact" });
 
   const removeComment = async () => {
     const res = await deleteComment(comment._id);

@@ -1,4 +1,5 @@
 export * from "./apiTypes";
+export * from "./omdb";
 
 export enum Appearance {
   Part1 = "Part I",

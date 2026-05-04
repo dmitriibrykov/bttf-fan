@@ -11,7 +11,10 @@ export const POST = apiHandler(async (req) => {
   const user = await getUserFromServerSession();
 
   if (!user?.email) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json(
+      { status: STATUS.FAILED, error: "Unauthorized" },
+      { status: 401 },
+    );
   }
 
   const { commentId } = await req.json();

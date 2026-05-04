@@ -5,7 +5,7 @@ import cloudinary from "@/lib/cloudinary";
 import { STATUS } from "@/types";
 import { apiHandler } from "@/lib/apiHandler";
 
-export const PATCH = apiHandler(async (request) => {
+export const PATCH = apiHandler(async (req) => {
   await dbConnect();
 
   const user = await getUserFromServerSession();
@@ -17,7 +17,7 @@ export const PATCH = apiHandler(async (request) => {
     );
   }
 
-  const formData = await request.formData();
+  const formData = await req.formData();
   const file = formData.get("file") as File;
   const name = formData.get("name") as string;
   const email = user.email;
