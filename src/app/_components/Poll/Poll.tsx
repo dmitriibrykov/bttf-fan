@@ -64,7 +64,7 @@ export default function Poll({ closePoll, refetch }: Props) {
 
   return (
     <>
-      <div className="fixed z-2 inset-0 m-auto bg-white max-w-[500px] w-fit h-fit text-muted px-8 py-4 rounded-md">
+      <div className="fixed z-2 inset-0 m-auto bg-white max-w-[90vw] md:max-w-[500px] w-auto h-fit text-muted px-4 md:px-8 py-4 rounded-md">
         <Swiper
           onSwiper={setSwiper}
           allowTouchMove={false}
@@ -101,7 +101,7 @@ export default function Poll({ closePoll, refetch }: Props) {
           {activeIndex > 0 && (
             <Button
               onClick={() => swiper?.slidePrev()}
-              className="w-[200px] h-[50px] rounded-md mr-auto"
+              className="max-w-[200px] grow h-[50px] rounded-md mr-auto"
               variant="secondary"
             >
               Previous Question
@@ -110,15 +110,16 @@ export default function Poll({ closePoll, refetch }: Props) {
           {activeIndex < totalQuestions - 1 && (
             <Button
               onClick={() => swiper?.slideNext()}
-              className="w-[200px] h-[50px] rounded-md ml-auto"
+              className="max-w-[200px] grow h-[50px] rounded-md ml-auto"
               variant="secondary"
+              disabled={typeof answers[activeIndex] !== "number"}
             >
               Next Question
             </Button>
           )}
           {activeIndex === totalQuestions - 1 && (
             <Button
-              className="w-[200px] h-[50px] rounded-md ml-auto"
+              className="max-w-[200px] grow h-[50px] rounded-md ml-auto"
               onClick={saveAnswers}
             >
               {isSaving && (

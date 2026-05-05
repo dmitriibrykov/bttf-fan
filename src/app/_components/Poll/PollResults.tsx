@@ -96,11 +96,11 @@ export function PollResults() {
               );
             })}
           </Swiper>
-          <div className="flex gap-8 w-full justify-end">
+          <div className="flex gap-8 w-full overflow-hidden justify-end">
             {activeIndex > 0 && (
               <Button
                 onClick={() => swiper?.slidePrev()}
-                className="w-[200px] h-[50px] rounded-md mr-auto"
+                className="max-w-[200px] grow h-[50px] rounded-md mr-auto"
                 variant="secondary"
               >
                 Previous Question
@@ -109,7 +109,7 @@ export function PollResults() {
             {activeIndex < results.length - 1 && (
               <Button
                 onClick={() => swiper?.slideNext()}
-                className="w-[200px] h-[50px] rounded-md ml-auto"
+                className="max-w-[200px] grow h-[50px] rounded-md ml-auto"
                 variant="secondary"
               >
                 Next Question
