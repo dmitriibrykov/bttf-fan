@@ -6,21 +6,25 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 
 ## Screenshots
 
-1. ### Characters page with search and film appearance indicators and different theme
+1. ### Main page with poll and information about movies from the external API
+
+   ![main-page](/src/assets/readme/main.png?raw=true)
+
+2. ### Characters page with search and film appearance indicators and different theme
 
    ![characters-dark](/src/assets/readme/characters-dark.png?raw=true)
    ![characters-light](/src/assets/readme/characters-light.png?raw=true)
 
-2. ### Interactive timeline with alternate 1985 branch
+3. ### Interactive timeline with alternate 1985 branch
 
-   ![main-timeline](/src/assets/readme/main-page.png?raw=true)
+   ![timeline-page](/src/assets/readme/timeline.png?raw=true)
 
-3. ### Profile page
+4. ### Profile page
 
-   ![profile-page](/src/assets/readme/profile-page.png?raw=true)
+   ![profile-page](/src/assets/readme/profile.png?raw=true)
 
-4. ### Character profile with comments section
-   ![profile-page](/src/assets/readme/character.png?raw=true)
+5. ### Character profile with comments section
+   ![character-page](/src/assets/readme/character.png?raw=true)
 
 ## Tech Stack
 
@@ -28,7 +32,7 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 - **Database:** MongoDB + Mongoose
 - **Auth:** NextAuth.js with Google & GitHub OAuth
 - **Storage:** Cloudinary (image upload + avatar cropping)
-- **UI:** Tailwind CSS + shadcn/ui
+- **UI:** Tailwind CSS + shadcn/ui + Swiper
 - **Animations:** Framer Motion
 - **Deployment:** Vercel
 
@@ -37,7 +41,10 @@ A full-stack fan site for the Back to the Future trilogy, built with Next.js 16,
 - Server-side character search with MongoDB `$regex`
 - OAuth authentication via Google and GitHub
 - Comments with user avatars fetched via MongoDB aggregation pipeline
-- Comment deletion with confirmation dialog
+- Comment deletion with confirmation dialog, editing, ability to like
+- Poll implemented as a slider in a React portal, results are shown via slider as well
+- Poll results with O(n) algorithm to collect all polls result and combine it
+- Movies information from OMDB API
 - Avatar upload with crop tool (react-easy-crop + Cloudinary)
 - Interactive SVG timeline with alternate 1985 branch
 - Dark / Light theme switcher
