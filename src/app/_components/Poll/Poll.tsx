@@ -64,7 +64,7 @@ export default function Poll({ closePoll, refetch }: Props) {
 
   return (
     <>
-      <div className="fixed z-2 inset-0 m-auto bg-white max-w-[90vw] md:max-w-[500px] w-auto h-fit text-muted px-4 md:px-8 py-4 rounded-md">
+      <div className="fixed z-2 inset-0 m-auto bg-white max-w-[90vw] md:max-w-[500px] w-auto h-fit text-foreground px-4 md:px-8 py-4 rounded-md">
         <Swiper
           onSwiper={setSwiper}
           allowTouchMove={false}

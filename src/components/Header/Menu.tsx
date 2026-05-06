@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Menu as MenuIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { navLinks } from "@/constants";
-import Link from "next/link";
-import TimelineLink from "./TimelineLink";
 
 export default function Menu() {
   const [isSheetOpen, setIsOpenSheet] = useState(false);
@@ -25,19 +24,8 @@ export default function Menu() {
         side="left"
       >
         <SheetTitle />
-        {navLinks.map(({ href, label, isTimeline }) => {
+        {navLinks.map(({ href, label }) => {
           const isActive = pathname === href;
-
-          if (isTimeline)
-            return (
-              <TimelineLink
-                key={label}
-                isActive={isActive}
-                href={href}
-                label={label}
-                handleToggleSheet={handleToggleSheet}
-              />
-            );
 
           return isActive ? (
             <span

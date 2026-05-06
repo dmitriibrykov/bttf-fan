@@ -31,12 +31,12 @@ export default async function CharacterPage({ params }: Props) {
   const character = res.character;
 
   return (
-    <div className="flex flex-col items-center w-full mx-auto h-auto gap-4 pb-4 px-4 md:gap-8 md:pb-8 md:px-8 pt-4">
+    <div className="flex flex-col items-start w-full mx-auto h-auto gap-4 pb-4 px-4 md:gap-8 md:pb-8 md:px-8 pt-4">
       <div className="flex flex-col md:flex-row gap-8 md:gap-16">
         <img
           src={character.imgSrc}
           alt={character.name}
-          className="h-fit w-[300px]"
+          className="h-fit w-[300px] rounded-md"
         />
         <div className="flex flex-col gap-4">
           <h2>{character.name}</h2>

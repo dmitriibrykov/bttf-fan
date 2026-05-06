@@ -59,31 +59,3 @@ Users select an image -> crop it in a modal using `react-easy-crop` → the crop
 
 **Auth-aware UI**
 Unauthenticated users can browse characters and read comments. Leaving a comment redirects to sign-in with a `callbackUrl` so users return to the same character page after login.
-
-## Getting Started
-
-```bash
-git clone https://github.com/dmitriibrykov/bttf-fan.git
-cd bttf-fan
-npm install
-```
-
-Create a `.env.local` file:
-
-```env
-MONGODB_CLUSTER=your_mongodb_uri
-NEXTAUTH_SECRET=your_secret
-NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_API_URL=http://localhost:3000
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-```
-
-```bash
-npm run dev
-```
