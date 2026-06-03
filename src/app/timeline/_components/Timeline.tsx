@@ -60,9 +60,10 @@ export default function Timeline() {
     }
   }
 
-  if (status === STATUS.FAILED) return <Error />;
+  if (status === STATUS.LOADING) return <Loading />;
 
-  if (status === STATUS.LOADING || !point1955 || !point1985) return <Loading />;
+  if (status === STATUS.FAILED || !point1955 || !point1985)
+    return <Error message="No timelines were found!" />;
 
   return (
     <div className="w-full px-2 md:px-8 mt-8">
@@ -70,7 +71,10 @@ export default function Timeline() {
         viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
         className="w-full"
         style={{ overflow: "visible" }}
+        role="img"
       >
+        <title>Timeline</title>
+        <desc>Interactive timeline with alternate branch</desc>
         <line
           x1={0}
           y1={MAIN_Y}
